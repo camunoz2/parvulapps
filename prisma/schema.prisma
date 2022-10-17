@@ -1,0 +1,65 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Student {
+  id       Int     @id @default(autoincrement())
+  name     String
+  lastName String
+  rut      String
+  scores   Score[]
+
+  // Class Relation -- one student cant belong on more than one class
+  classId Int   @unique
+  class   Class @relation(fields: [classId], references: [id])
+
+  @@index([classId])
+}
+
+model Class {
+  id       Int       @id @default(autoincrement())
+  name     String
+  section  String
+  students Student[]
+}
+
+model Score {
+  id         Int       @id @default(autoincrement())
+  value      Int
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+  Student    Student?  @relation(fields: [studentId], references: [id])
+  studentId  Int?
+}
+
+model Descriptor {
+  id          Int       @id @default(autoincrement())
+  description String
+  isActive    Boolean
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+}
+
+model Category {
+  id         Int          @id @default(autoincrement())
+  name       String
+  Score      Score[]
+  Descriptor Descriptor[]
+}
+
+model Teacher {
+  id          Int      @id @default(autoincrement())
+  name        String
+  lastName    String
+  rut         String
+  mail        String
+  permissions String
+  lastLogin   DateTime
+}
