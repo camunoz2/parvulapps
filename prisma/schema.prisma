@@ -17,13 +17,13 @@ model Student {
   scores   Score[]
 
   // Class Relation -- one student cant belong on more than one class
-  classId Int   @unique
-  class   Class @relation(fields: [classId], references: [id])
+  classroomId Int       @unique
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
 
-  @@index([classId])
+  @@index([classroomId])
 }
 
-model Class {
+model Classroom {
   id       Int       @id @default(autoincrement())
   name     String
   section  String
@@ -37,6 +37,7 @@ model Score {
   categoryId Int?
   Student    Student?  @relation(fields: [studentId], references: [id])
   studentId  Int?
+
   @@index([categoryId, studentId])
 }
 
@@ -46,6 +47,7 @@ model Descriptor {
   isActive    Boolean
   category    Category? @relation(fields: [categoryId], references: [id])
   categoryId  Int?
+
   @@index([categoryId])
 }
 

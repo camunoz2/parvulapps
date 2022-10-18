@@ -1,9 +1,27 @@
-import type { NextPage } from 'next'
+import { Classroom, PrismaClient } from '@prisma/client'
+
 import Head from 'next/head'
 import React, { useState } from 'react'
 import styles from '../styles/Home.module.css'
 
-const Home: NextPage = () => {
+const prisma = new PrismaClient()
+
+export async function getServerSideProps() {
+
+  const data = await prisma.classroom.findMany()
+  return {
+    props: {
+      classes: data
+    }
+  }
+}
+
+interface Props {
+  classes:Classroom[]
+}
+
+const Home = ({classes}:Props) => {
+
   interface Student {
     name: string
     lastName: string
@@ -85,6 +103,10 @@ const Home: NextPage = () => {
 
         <div>
           <h2>Lista de estudiantes</h2>
+
+          <div>
+            {classes.map(item => item.name)}
+          </div>
           <ul>
             {studentList ? studentList.map((student, index) => {
               return <li key={index}>{student.name}</li>
@@ -97,3 +119,5 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+
