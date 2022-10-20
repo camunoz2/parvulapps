@@ -1,5 +1,6 @@
 import Head from 'next/head'
-import Link from 'next/link'
+import { signIn } from 'next-auth/react'
+
 import Button from '../components/UI/Button'
 import CenterFull from '../components/UI/CenterFull'
 import FlexColumn from '../components/UI/FlexColumn'
@@ -16,11 +17,11 @@ const LoginPage = () => {
         <CenterFull>
           <FlexColumn>
             <Heading level={1}>Iniciar Sesion</Heading>
-            <Link href="/dashboard">
-              <a>
-                <Button>Ingresar con GMail</Button>
-              </a>
-            </Link>
+            <div
+              onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+            >
+              <Button>Ingresar con GMail</Button>
+            </div>
           </FlexColumn>
         </CenterFull>
       </Layout>
