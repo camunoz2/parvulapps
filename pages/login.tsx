@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Button from '../components/Button'
 import CenterFull from '../components/UI/CenterFull'
 import FlexColumn from '../components/UI/FlexColumn'
@@ -8,7 +9,11 @@ const LoginPage = () => {
     <CenterFull>
       <FlexColumn>
         <Heading level={1}>Iniciar Sesion</Heading>
-        <Button>Ingresar con GMail</Button>
+        <Link href="/dashboard">
+          <a>
+            <Button>Ingresar con GMail</Button>
+          </a>
+        </Link>
       </FlexColumn>
     </CenterFull>
   )
