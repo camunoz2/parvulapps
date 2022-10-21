@@ -35,8 +35,11 @@ const Home = ({ classes }: Props) => {
     section: '',
   }
 
-  const [studentData, setStudentData] = useState<Student>(initialState)
-  const [studentList, setStudentList] = useState<Student[] | null>(null)
+  const [studentData, setStudentData] =
+    useState<Student>(initialState)
+  const [studentList, setStudentList] = useState<Student[] | null>(
+    null
+  )
 
   const addStudent = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -44,14 +47,18 @@ const Home = ({ classes }: Props) => {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStudentData({ ...studentData, [e.target.name]: e.target.value })
+    setStudentData({
+      ...studentData,
+      [e.target.name]: e.target.value,
+    })
   }
 
   return (
     <div>
       <Head>
         <title>
-          Parvulapps | Plataforma de evaluacion para educacion parvularia
+          Parvulapps | Plataforma de evaluacion para educacion
+          parvularia
         </title>
         <meta
           name="description"

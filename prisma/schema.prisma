@@ -10,35 +10,39 @@ datasource db {
 }
 
 model Student {
-  id       Int     @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   name     String
   lastName String
   rut      String
-  scores   Score[]
 
   // Class Relation -- one student cant belong on more than one class
   classroomId Int       @unique
   classroom   Classroom @relation(fields: [classroomId], references: [id])
+  Score       Score[]
 
   @@index([classroomId])
 }
 
 model Classroom {
-  id       Int       @id @default(autoincrement())
-  name     String
-  section  String
-  students Student[]
+  id          Int       @id @default(autoincrement())
+  name        String
+  fantasyName String
+  section     String
+  status      Boolean
+  students    Student[]
 }
 
 model Score {
-  id         Int       @id @default(autoincrement())
-  value      Int
-  category   Category? @relation(fields: [categoryId], references: [id])
-  categoryId Int?
-  Student    Student?  @relation(fields: [studentId], references: [id])
-  studentId  Int?
+  id               Int             @id @default(autoincrement())
+  value            Int
+  category         Category?       @relation(fields: [categoryId], references: [id])
+  categoryId       Int?
+  Student          Student?        @relation(fields: [studentId], references: [id])
+  studentId        Int?
+  evaluationId     EvaluationTerm? @relation(fields: [evaluationTermId], references: [id])
+  evaluationTermId Int?
 
-  @@index([categoryId, studentId])
+  @@index([categoryId, studentId, evaluationTermId])
 }
 
 model Descriptor {
@@ -66,4 +70,10 @@ model Teacher {
   mail        String
   permissions String
   lastLogin   DateTime
+}
+
+model EvaluationTerm {
+  id    Int     @id @default(autoincrement())
+  name  String
+  Score Score[]
 }

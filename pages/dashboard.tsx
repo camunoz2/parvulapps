@@ -7,6 +7,7 @@ import FlexColumn from '../components/UI/FlexColumn'
 import Heading from '../components/UI/Heading'
 import Layout from '../components/UI/Layout'
 import Separator from '../components/UI/Separator'
+import Link from 'next/link'
 
 const DashboardPage = () => {
   const { data: session } = useSession()
@@ -27,7 +28,11 @@ const DashboardPage = () => {
             <Heading level={4}>Que quieres hacer hoy?</Heading>
             <Button>Evaluar alumnos</Button>
             <Button>Ver Resultados</Button>
-            <Button>Configuracion</Button>
+            <Link href="/configurar">
+              <a>
+                <Button>Configuracion</Button>
+              </a>
+            </Link>
             <div onClick={() => signOut({ callbackUrl: '/login' })}>
               <Button>Cerrar Sesion</Button>
             </div>
