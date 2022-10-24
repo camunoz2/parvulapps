@@ -30,6 +30,8 @@ model Classroom {
   fantasyName String?
   section     String
   student     Student[]
+
+  @@index([id, section])
 }
 
 model Score {
