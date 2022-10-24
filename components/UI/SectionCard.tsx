@@ -6,7 +6,7 @@ interface Props {
   children?: JSX.Element | JSX.Element[]
 }
 
-const Section = ({ title, bodyText, children }: Props) => {
+const SectionCard = ({ title, bodyText, children }: Props) => {
   return (
     <div>
       <h2 className="text-xl font-bold text-gray-700">{title}</h2>
@@ -16,4 +16,4 @@ const Section = ({ title, bodyText, children }: Props) => {
   )
 }
 
-export default Section
+export default SectionCard

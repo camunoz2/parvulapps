@@ -16,9 +16,10 @@ model Student {
   rut      String
 
   // Class Relation -- one student cant belong on more than one class
-  classroomId Int       @unique
+
+  score       Score[]
   classroom   Classroom @relation(fields: [classroomId], references: [id])
-  Score       Score[]
+  classroomId Int
 
   @@index([classroomId])
 }
@@ -26,31 +27,29 @@ model Student {
 model Classroom {
   id          Int       @id @default(autoincrement())
   name        String
-  fantasyName String
+  fantasyName String?
   section     String
-  status      Boolean
-  students    Student[]
+  student     Student[]
 }
 
 model Score {
-  id               Int             @id @default(autoincrement())
+  id               Int            @id @default(autoincrement())
   value            Int
-  category         Category?       @relation(fields: [categoryId], references: [id])
-  categoryId       Int?
-  Student          Student?        @relation(fields: [studentId], references: [id])
-  studentId        Int?
-  evaluationId     EvaluationTerm? @relation(fields: [evaluationTermId], references: [id])
-  evaluationTermId Int?
+  category         Category       @relation(fields: [categoryId], references: [id])
+  categoryId       Int
+  student          Student        @relation(fields: [studentId], references: [id])
+  studentId        Int
+  evaluationTerm   EvaluationTerm @relation(fields: [evaluationTermId], references: [id])
+  evaluationTermId Int
 
   @@index([categoryId, studentId, evaluationTermId])
 }
 
 model Descriptor {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   description String
-  isActive    Boolean
-  category    Category? @relation(fields: [categoryId], references: [id])
-  categoryId  Int?
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int
 
   @@index([categoryId])
 }
@@ -58,8 +57,8 @@ model Descriptor {
 model Category {
   id         Int          @id @default(autoincrement())
   name       String
-  Score      Score[]
-  Descriptor Descriptor[]
+  score      Score[]
+  descriptor Descriptor[]
 }
 
 model Teacher {
@@ -75,5 +74,5 @@ model Teacher {
 model EvaluationTerm {
   id    Int     @id @default(autoincrement())
   name  String
-  Score Score[]
+  score Score[]
 }
