@@ -18,7 +18,7 @@ const DashboardPage = () => {
         <title>Parvulapps | Configuracion</title>
       </Head>
       <Layout>
-        <CenterFull>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <FlexColumn>
             <Heading level={3}>Bienvenid@</Heading>
             <Heading level={1}>
@@ -37,7 +37,7 @@ const DashboardPage = () => {
               <Button>Cerrar Sesion</Button>
             </div>
           </FlexColumn>
-        </CenterFull>
+        </div>
       </Layout>
     </>
   )

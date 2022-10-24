@@ -1,28 +1,21 @@
 import { useRouter } from 'next/router'
+import React, { useEffect } from 'react'
 
 interface Props {
-  on: boolean
-  classroomId: number
+  classroomName: string
+  setClassroomState: React.Dispatch<React.SetStateAction<boolean>>
+  classroomState: boolean
 }
 
-const Togglable = ({ on, classroomId }: Props) => {
+const Togglable = ({
+  classroomName,
+  setClassroomState,
+  classroomState,
+}: Props) => {
   const router = useRouter()
 
-  const handleStatus = async () => {
-    const toggledStatus = !on
-    const res = await fetch('/api/updateClassroom', {
-      method: 'POST',
-      body: JSON.stringify({
-        id: classroomId,
-        status: toggledStatus,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    if (res.status === 200) {
-      refresh()
-    }
+  const handleClassroomState = async () => {
+    setClassroomState(!classroomState)
   }
 
   const refresh = () => {
@@ -30,12 +23,12 @@ const Togglable = ({ on, classroomId }: Props) => {
   }
   return (
     <div
-      onClick={handleStatus}
+      onClick={handleClassroomState}
       className="relative flex h-5 w-8 bg-gray-400 rounded-full"
     >
       <div
         className={`absolute top-1/2 -translate-y-1/2 rounded-full w-3 h-3 bg-white border border-slate-800 ${
-          on ? 'right-1' : 'left-1'
+          classroomState ? 'right-1' : 'left-1'
         }`}
       />
     </div>

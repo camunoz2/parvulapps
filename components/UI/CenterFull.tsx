@@ -4,7 +4,7 @@ interface Props {
 
 const CenterFull = ({ children }: Props) => {
   return (
-    <div className="flex justify-center items-center self-center w-screen h-screen">
+    <div className="flex items-center justify-center w-full h-screen">
       {children}
     </div>
   )

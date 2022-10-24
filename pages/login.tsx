@@ -14,16 +14,18 @@ const LoginPage = () => {
         <title>Parvulapps | Login</title>
       </Head>
       <Layout>
-        <CenterFull>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <FlexColumn>
             <Heading level={1}>Iniciar Sesion</Heading>
             <div
-              onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+              onClick={() =>
+                signIn('google', { callbackUrl: '/dashboard' })
+              }
             >
               <Button>Ingresar con GMail</Button>
             </div>
           </FlexColumn>
-        </CenterFull>
+        </div>
       </Layout>
     </>
   )
