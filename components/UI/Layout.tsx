@@ -1,4 +1,10 @@
 import Menu from './Menu'
+import {
+  QueryClientProvider,
+  QueryClient,
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
 
 const Layout = ({
   children,
@@ -8,7 +14,9 @@ const Layout = ({
   return (
     <div className="mt-24 container mx-auto">
       <Menu />
-      {children}
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
     </div>
   )
 }
