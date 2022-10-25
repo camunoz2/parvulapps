@@ -1,1 +1,3 @@
-It should have two classrooms and one section for each class in database
+### Parvulapps
+
+Proyect for classroom management! (WIP)

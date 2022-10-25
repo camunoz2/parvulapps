@@ -1,24 +1,24 @@
 import { Classroom, Student } from '@prisma/client'
-import { equal } from 'assert'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from '../components/UI/Button'
 import Layout from '../components/UI/Layout'
-import TextInput from '../components/UI/TextInput'
 import prisma from '../lib/prisma'
 
 interface Props {
-  classroom: Classroom[]
   nt1: Classroom[]
   nt2: Classroom[]
-  students: Student[]
 }
 
-const Agregar = ({ nt1, nt2, classroom, students }: Props) => {
+const Agregar = ({ nt1, nt2 }: Props) => {
   const router = useRouter()
 
-  const [selectClass, setSelectClass] = useState('NT1')
-  const [selectSection, setSelectSection] = useState('A')
+  const [selectClass, setSelectClass] = useState<string | null>(null)
+  const [selectSection, setSelectSection] = useState<string | null>(
+    null
+  )
+  const [students, setStudents] = useState<Array<Student>>()
+  const [isLoading, setIsLoading] = useState(false)
 
   const classrooms = ['NT1', 'NT2']
 
@@ -28,16 +28,30 @@ const Agregar = ({ nt1, nt2, classroom, students }: Props) => {
     rut: '',
   })
 
-  const handleClassroomSelect = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectClass(event.target.value)
-  }
+  useEffect(() => {
+    setIsLoading(true)
+    makeSelection()
+    router.replace({
+      query: {
+        ...router.query,
+        section: selectSection,
+        classroom: selectClass,
+      },
+    })
+  }, [selectClass, selectSection])
 
-  const handleSectionSelect = (
+  const handleSection = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setSelectSection(event.target.value)
+  }
+  const handleClass = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setSelectClass(event.target.value)
+    router.replace({
+      query: { ...router.query, classroom: selectClass },
+    })
   }
 
   const handleStudent = (
@@ -65,6 +79,7 @@ const Agregar = ({ nt1, nt2, classroom, students }: Props) => {
       headers: {
         'Content-Type': 'application/json',
       },
+
       body: JSON.stringify({
         firstName: student.firstName,
         lastName: student.lastName,
@@ -78,15 +93,30 @@ const Agregar = ({ nt1, nt2, classroom, students }: Props) => {
     }
   }
 
+  // TODO: Make selection should be a POST req with query params
+  const makeSelection = async () => {
+    const res = await fetch('/api/getStudents', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        classroom: selectClass,
+        section: selectSection,
+      }),
+    })
+    if (res.status === 200) {
+      const data = await res.json()
+      setStudents(data)
+      setIsLoading(false)
+    }
+  }
+
   return (
     <Layout>
       <h2>Agregar alumnos</h2>
       <div className="flex gap-1">
         <div className="border border-gray-400 p-1">
-          <select
-            value={selectClass}
-            onChange={handleClassroomSelect}
-          >
+          <select onChange={handleClass}>
+            {selectClass ?? <option>---Elige----</option>}
             {classrooms.map((classroom, index) => (
               <option key={index} value={classroom}>
                 {classroom}
@@ -95,8 +125,9 @@ const Agregar = ({ nt1, nt2, classroom, students }: Props) => {
           </select>
         </div>
         <div className="border border-gray-400 p-1">
-          <select onChange={handleSectionSelect}>
-            {selectClass === 'NT1'
+          <select onChange={handleSection}>
+            {selectSection ?? <option>---Elige----</option>}
+            {selectClass === 'NT1' && selectSection
               ? nt1.map((classroom) => (
                   <option
                     key={classroom.id}
@@ -158,19 +189,25 @@ const Agregar = ({ nt1, nt2, classroom, students }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {students.map((student) => (
-            <tr key={student.id}>
-              <td className="border border-slate-400">
-                {student.name}
-              </td>
-              <td className="border border-slate-400">
-                {student.lastName}
-              </td>
-              <td className="border border-slate-400">
-                {student.rut}
-              </td>
+          {isLoading && (
+            <tr>
+              <td>'Loading...'</td>
             </tr>
-          ))}
+          )}
+          {students &&
+            students.map((student) => (
+              <tr key={student.id}>
+                <td className="border border-slate-400">
+                  {student.name}
+                </td>
+                <td className="border border-slate-400">
+                  {student.lastName}
+                </td>
+                <td className="border border-slate-400">
+                  {student.rut}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </Layout>
@@ -180,7 +217,6 @@ const Agregar = ({ nt1, nt2, classroom, students }: Props) => {
 export default Agregar
 
 export const getServerSideProps = async () => {
-  const students = await prisma.student.findMany()
   const classrooms = await prisma.classroom.findMany()
   const nt1 = await prisma.classroom.findMany({
     where: {
@@ -198,7 +234,6 @@ export const getServerSideProps = async () => {
       classrooms,
       nt1,
       nt2,
-      students,
     },
   }
 }
