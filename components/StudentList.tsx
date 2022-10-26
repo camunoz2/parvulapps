@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 const StudentList = () => {
   const { isLoading, data } = useQuery(['students'], getStudents)
 
-  async function getStudents(): Promise<Student[]> {
+  function getStudents(): Promise<Student[]> {
     return fetch('/api/get-students', {
       method: 'GET',
       headers: {
