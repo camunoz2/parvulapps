@@ -2,7 +2,6 @@ import Head from 'next/head'
 import { signIn } from 'next-auth/react'
 
 import Button from '../components/UI/Button'
-import CenterFull from '../components/UI/CenterFull'
 import FlexColumn from '../components/UI/FlexColumn'
 import Heading from '../components/UI/Heading'
 import Layout from '../components/UI/Layout'

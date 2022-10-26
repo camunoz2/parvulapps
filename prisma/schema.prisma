@@ -14,24 +14,20 @@ model Student {
   name     String
   lastName String
   rut      String
-
   // Class Relation -- one student cant belong on more than one class
 
-  score       Score[]
-  classroom   Classroom @relation(fields: [classroomId], references: [id])
-  classroomId Int
+  score   Score[]
+  grade   Grade   @relation(fields: [gradeId], references: [id])
+  gradeId Int
 
-  @@index([classroomId])
+  @@index([gradeId])
 }
 
-model Classroom {
-  id          Int       @id @default(autoincrement())
-  name        String
-  fantasyName String?
-  section     String
-  student     Student[]
-
-  @@index([name, section])
+model Grade {
+  id        Int       @id @default(autoincrement())
+  classroom String
+  section   String
+  students  Student[]
 }
 
 model Score {

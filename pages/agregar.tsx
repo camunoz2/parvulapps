@@ -1,10 +1,18 @@
-import CourseSelector from '../components/CourseSelector'
+import { useState } from 'react'
+import GradeSelector from '../components/GradeSelector'
+import StudentList from '../components/StudentList'
 import Layout from '../components/UI/Layout'
 
 const Agregar = () => {
+  const [filter, setFilter] = useState({
+    classroom: '',
+    section: '',
+  })
+
   return (
     <Layout>
-      <CourseSelector />
+      <GradeSelector />
+      <StudentList />
     </Layout>
   )
 }

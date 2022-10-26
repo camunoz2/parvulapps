@@ -5,7 +5,7 @@ export default async function removeSection(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  await prisma.classroom.delete({
+  await prisma.grade.delete({
     where: {
       id: req.body.id,
     },
