@@ -26,7 +26,11 @@ const DashboardPage = () => {
             </Heading>
             <Separator gap={1} />
             <Heading level={4}>Que quieres hacer hoy?</Heading>
-            <Button>Evaluar alumnos</Button>
+            <Link href="/evaluar">
+              <a>
+                <Button>Evaluar alumnos</Button>
+              </a>
+            </Link>
             <Button>Ver Resultados</Button>
             <Link href="/configurar">
               <a>
