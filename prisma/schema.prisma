@@ -28,6 +28,8 @@ model Grade {
   classroom String
   section   String
   students  Student[]
+
+  @@unique([classroom, section], name: "classroom_section")
 }
 
 model Score {

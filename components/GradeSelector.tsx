@@ -1,22 +1,25 @@
 import { Grade } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
-import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { SetStateAction, useState } from 'react'
 
-const GradeSelector = () => {
-  const [section, setSection] = useState('NT1')
-  const router = useRouter()
+interface Props {
+  classroom: string | null
+  section: string | null
+  handleClassroomChange: React.Dispatch<SetStateAction<string | null>>
+  handleSectionChange: React.Dispatch<SetStateAction<string | null>>
+}
 
+const GradeSelector = ({
+  classroom,
+  section,
+  handleClassroomChange,
+  handleSectionChange,
+}: Props) => {
   const { isLoading, data } = useQuery(['grades'], getSections)
 
-  const nt1Sections = data?.filter(
-    (item) => item.classroom === section
+  const sections = data?.filter(
+    (item) => item.classroom === classroom
   )
-  const nt2Sections = data?.filter(
-    (item) => item.classroom === section
-  )
-
-  const sections = section === 'NT1' ? nt1Sections : nt2Sections
 
   function getSections(): Promise<Grade[]> {
     return fetch('/api/get-grades', {
@@ -29,12 +32,24 @@ const GradeSelector = () => {
 
   return (
     <div>
-      <select onChange={(event) => setSection(event.target.value)}>
+      <select
+        onChange={(event) => {
+          handleClassroomChange(event.target.value)
+          handleSectionChange(null)
+        }}
+      >
+        {!classroom && <option>---</option>}
         <option value="NT1">NT1</option>
         <option value="NT2">NT2</option>
       </select>
 
-      <select className="border border-gray-600 p-2">
+      <select
+        onChange={(event) => {
+          handleSectionChange(event.target.value)
+        }}
+        className="border border-gray-600 p-2"
+      >
+        {!section && <option>---</option>}
         {sections?.map((classroom) => (
           <option value={classroom.section} key={classroom.id}>
             {classroom.section}
