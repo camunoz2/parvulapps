@@ -27,30 +27,62 @@ async function main() {
   const st11 = await createStudent(prisma, nt2b.id)
   const st12 = await createStudent(prisma, nt2b.id)
 
-  const category = await prisma.category.create({
+  const categoryA = await prisma.category.create({
     data: {
       description: 'Interaccion y comprension del medio',
     },
   })
-
-  const core = await prisma.core.create({
+  const categoryB = await prisma.category.create({
     data: {
-      description: 'Exploración del entorno natural',
-      categoryId: category.id,
+      description: 'Desarrollo personal y social',
+    },
+  })
+  const categoryC = await prisma.category.create({
+    data: {
+      description: 'Comunicacion integral',
     },
   })
 
-  const obj = await prisma.objetive.create({
+  const coreA = await prisma.core.create({
+    data: {
+      description: 'Exploración del entorno natural',
+      categoryId: categoryA.id,
+    },
+  })
+  const coreB = await prisma.core.create({
+    data: {
+      description: 'Comprension del entorno sociocultural',
+      categoryId: categoryA.id,
+    },
+  })
+  const coreC = await prisma.core.create({
+    data: {
+      description: 'Pensamiento Matematico',
+      categoryId: categoryA.id,
+    },
+  })
+
+  const objA = await prisma.objetive.create({
     data: {
       description:
         'Manifestar interés y asombro al ampliar información sobre cambios que ocurren en el entorno natural, a las personas, animales, plantas, lugares y cuerpos celestes, utilizando diversas fuentes y procedimientos',
-      coreId: core.id,
+      coreId: coreA.id,
     },
   })
 
-  const ev = await prisma.evaluationTerm.create({
+  const ev1 = await prisma.evaluationTerm.create({
     data: {
       name: 'inicio',
+    },
+  })
+  const ev2 = await prisma.evaluationTerm.create({
+    data: {
+      name: 'intermedia',
+    },
+  })
+  const ev3 = await prisma.evaluationTerm.create({
+    data: {
+      name: 'final',
     },
   })
 
@@ -58,8 +90,8 @@ async function main() {
     prisma,
     'Explora el entorno, observando, manipulando y formulando preguntas sobre los cambios que ocurren en el entorno natural (personas, animales, plantas, lugares y cuerpos celestes).',
     4,
-    ev.id,
-    obj.id,
+    ev1.id,
+    objA.id,
     st1.id
   )
 
