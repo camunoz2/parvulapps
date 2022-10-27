@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@faker-js/faker': ^7.6.0
   '@prisma/client': ^4.5.0
   '@tanstack/react-query': ^4.13.0
   '@types/node': 18.11.0
@@ -30,6 +31,7 @@ dependencies:
   tailwindcss: 3.2.0_neo3lunb2qpadwxplzw7r2isgm
 
 devDependencies:
+  '@faker-js/faker': 7.6.0
   '@prisma/client': 4.5.0_prisma@4.5.0
   '@types/node': 18.11.0
   '@types/react': 18.0.21
@@ -77,6 +79,11 @@ packages:
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@faker-js/faker/7.6.0:
+    resolution: {integrity: sha512-XK6BTq1NDMo9Xqw/YkYyGjSsg44fbNwYRx7QK2CuoQgyy+f1rrTDHoExVM5PsyXCtfl2vs2vVJ0MN0yN6LppRw==}
+    engines: {node: '>=14.0.0', npm: '>=6.0.0'}
     dev: true
 
   /@humanwhocodes/config-array/0.10.7:

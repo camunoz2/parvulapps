@@ -16,9 +16,9 @@ model Student {
   rut      String
   // Class Relation -- one student cant belong on more than one class
 
-  score   Score[]
-  grade   Grade   @relation(fields: [gradeId], references: [id])
-  gradeId Int
+  grade     Grade       @relation(fields: [gradeId], references: [id])
+  gradeId   Int
+  Indicator Indicator[]
 
   @@index([gradeId])
 }
@@ -28,37 +28,46 @@ model Grade {
   classroom String
   section   String
   students  Student[]
-
-  @@unique([classroom, section], name: "classroom_section")
 }
 
-model Score {
+model Indicator {
   id               Int            @id @default(autoincrement())
-  value            Int
-  category         Category       @relation(fields: [categoryId], references: [id])
-  categoryId       Int
+  description      String         @db.VarChar(500)
+  objetive         Objetive       @relation(fields: [objetiveId], references: [id])
+  score            Int
+  term             EvaluationTerm @relation(fields: [evaluationTermId], references: [id])
   student          Student        @relation(fields: [studentId], references: [id])
-  studentId        Int
-  evaluationTerm   EvaluationTerm @relation(fields: [evaluationTermId], references: [id])
+  objetiveId       Int
   evaluationTermId Int
+  studentId        Int
 
-  @@index([categoryId, studentId, evaluationTermId])
+  @@index([objetiveId, studentId])
 }
 
-model Descriptor {
-  id          Int      @id @default(autoincrement())
+model Objetive {
+  id          Int         @id @default(autoincrement())
+  description String      @db.VarChar(500)
+  core        Core        @relation(fields: [coreId], references: [id])
+  Indicator   Indicator[]
+  coreId      Int
+
+  @@index([coreId])
+}
+
+model Core {
+  id          Int        @id @default(autoincrement())
   description String
-  category    Category @relation(fields: [categoryId], references: [id])
+  category    Category   @relation(fields: [categoryId], references: [id])
+  Objetive    Objetive[]
   categoryId  Int
 
   @@index([categoryId])
 }
 
 model Category {
-  id         Int          @id @default(autoincrement())
-  name       String
-  score      Score[]
-  descriptor Descriptor[]
+  id          Int    @id @default(autoincrement())
+  description String
+  Core        Core[]
 }
 
 model Teacher {
@@ -72,7 +81,7 @@ model Teacher {
 }
 
 model EvaluationTerm {
-  id    Int     @id @default(autoincrement())
-  name  String
-  score Score[]
+  id        Int         @id @default(autoincrement())
+  name      String
+  Indicator Indicator[]
 }
