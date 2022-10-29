@@ -10,55 +10,55 @@ datasource db {
 }
 
 model Student {
-  id       Int    @id @default(autoincrement())
-  name     String
-  lastName String
-  rut      String
-  // Class Relation -- one student cant belong on more than one class
-
-  grade     Grade       @relation(fields: [gradeId], references: [id])
-  gradeId   Int
-  Indicator Indicator[]
+  id                       Int                        @id @default(autoincrement())
+  name                     String
+  lastName                 String
+  rut                      String
+  Grade                    Grade                      @relation(fields: [gradeId], references: [id])
+  gradeId                  Int
+  StudentScoresByObjective StudentScoresByObjective[]
 
   @@index([gradeId])
+}
+
+model StudentScoresByObjective {
+  id              Int       @id @default(autoincrement())
+  firstTermScore  Int       @default(0)
+  secondTermScore Int       @default(0)
+  thirdTermScore  Int       @default(0)
+  Objective       Objective @relation(fields: [objectiveId], references: [id])
+  objectiveId     Int       @unique
+  Student         Student   @relation(fields: [studentId], references: [id])
+  studentId       Int
+
+  @@index([studentId, objectiveId])
+}
+
+model Objective {
+  id                       Int                       @id @default(autoincrement())
+  description              String                    @db.VarChar(500)
+  level                    Int // nivel 1, 2 o 3
+  ParentCore               Core                      @relation(fields: [parentCoreId], references: [id])
+  parentCoreId             Int // pertenece a un nucleo
+  StudentScoresByObjective StudentScoresByObjective?
+
+  @@index([parentCoreId])
 }
 
 model Grade {
   id        Int       @id @default(autoincrement())
   classroom String
   section   String
-  students  Student[]
-}
+  Students  Student[]
 
-model Indicator {
-  id               Int            @id @default(autoincrement())
-  description      String         @db.VarChar(500)
-  objetive         Objetive       @relation(fields: [objetiveId], references: [id])
-  score            Int
-  term             EvaluationTerm @relation(fields: [evaluationTermId], references: [id])
-  student          Student        @relation(fields: [studentId], references: [id])
-  objetiveId       Int
-  evaluationTermId Int
-  studentId        Int
-
-  @@index([objetiveId, studentId])
-}
-
-model Objetive {
-  id          Int         @id @default(autoincrement())
-  description String      @db.VarChar(500)
-  core        Core        @relation(fields: [coreId], references: [id])
-  Indicator   Indicator[]
-  coreId      Int
-
-  @@index([coreId])
+  @@unique([classroom, section])
 }
 
 model Core {
-  id          Int        @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   description String
-  category    Category   @relation(fields: [categoryId], references: [id])
-  Objetive    Objetive[]
+  Objective   Objective[]
+  Category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  Int
 
   @@index([categoryId])
@@ -78,10 +78,4 @@ model Teacher {
   mail        String
   permissions String
   lastLogin   DateTime
-}
-
-model EvaluationTerm {
-  id        Int         @id @default(autoincrement())
-  name      String
-  Indicator Indicator[]
 }

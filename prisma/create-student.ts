@@ -1,4 +1,4 @@
-import type { PrismaClient, Prisma, Grade } from '@prisma/client'
+import type { PrismaClient, Prisma } from '@prisma/client'
 import { faker } from '@faker-js/faker'
 
 export async function createStudent(
@@ -14,7 +14,7 @@ export async function createStudent(
       name: faker.name.firstName(),
       lastName: faker.name.lastName(),
       rut: faker.random.numeric(9),
-      grade: {
+      Grade: {
         connect: {
           id: grade,
         },
