@@ -8,15 +8,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === 'POST') {
+    console.log(req.body.classroom, req.body.section)
     const filteredStudents = await prisma.student.findMany({
       where: {
-        grade: {
-          classroom: {
-            equals: req.body.classroom,
-          },
-          section: {
-            equals: req.body.section,
-          },
+        Grade: {
+          classroom: req.body.classroom,
+          section: req.body.section,
         },
       },
     })

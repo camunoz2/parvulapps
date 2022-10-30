@@ -26,13 +26,19 @@ const StudentList = ({ classroom, section }: Props) => {
   const updateStudentMutation = useMutation(
     (id: number) => updateStudent(id),
     {
-      onSuccess: () => {
-        queryClient.refetchQueries(['filtered-students'])
-      },
+      onSuccess: () =>
+        queryClient.invalidateQueries(['filtered-students']),
+    }
+  )
+  const deleteStudentMutation = useMutation(
+    (id: number) => deleteStudent(id),
+    {
+      onSuccess: () =>
+        queryClient.invalidateQueries(['filtered-students']),
     }
   )
 
-  const { isLoading, data } = useQuery(
+  const students = useQuery(
     ['filtered-students', classroom, section],
     (): Promise<Student[]> => {
       return fetch('/api/get-students', {
@@ -59,7 +65,17 @@ const StudentList = ({ classroom, section }: Props) => {
     })
   }
 
-  if (isLoading) return <p>...loading</p>
+  function deleteStudent(id: number) {
+    return fetch('/api/delete-student', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id,
+      }),
+    })
+  }
+
+  if (students.isLoading) return <p>...loading</p>
 
   return (
     <>
@@ -120,7 +136,7 @@ const StudentList = ({ classroom, section }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {data?.map((student) => (
+          {students.data?.map((student) => (
             <tr key={student.id}>
               <TableCell content={student.name} />
               <TableCell content={student.lastName} />
@@ -140,7 +156,12 @@ const StudentList = ({ classroom, section }: Props) => {
                   >
                     ✍️
                   </td>
-                  <td className="border border-gray-800 text-xl">
+                  <td
+                    onClick={() => {
+                      deleteStudentMutation.mutate(student.id)
+                    }}
+                    className="border border-gray-800 text-xl"
+                  >
                     🚮
                   </td>
                 </>

@@ -3,23 +3,27 @@ import GradeSelector from '../components/GradeSelector'
 import StudentCreator from '../components/StudentCreator'
 import StudentList from '../components/StudentList'
 import Layout from '../components/UI/Layout'
+import { CustomGrade } from '../types/app'
 
 const Agregar = () => {
-  const [classroom, setClassroom] = useState<string | null>(null)
-  const [section, setSection] = useState<string | null>(null)
+  const [grade, setGrade] = useState<CustomGrade>({
+    classroom: null,
+    section: null,
+  })
 
   return (
     <Layout>
-      <GradeSelector
-        classroom={classroom}
-        section={section}
-        handleClassroomChange={setClassroom}
-        handleSectionChange={setSection}
-      />
-      {classroom && section ? (
+      <GradeSelector grade={grade} handleGradeChange={setGrade} />
+      {grade?.classroom && grade?.section ? (
         <>
-          <StudentCreator classroom={classroom} section={section} />
-          <StudentList classroom={classroom} section={section} />
+          <StudentCreator
+            classroom={grade.classroom}
+            section={grade.section}
+          />
+          <StudentList
+            classroom={grade.classroom}
+            section={grade.section}
+          />
         </>
       ) : (
         <p>Elige la clase y la seccion😊</p>

@@ -10,37 +10,28 @@ datasource db {
 }
 
 model Student {
-  id                       Int                        @id @default(autoincrement())
-  name                     String
-  lastName                 String
-  rut                      String
-  Grade                    Grade                      @relation(fields: [gradeId], references: [id])
-  gradeId                  Int
-  StudentScoresByObjective StudentScoresByObjective[]
+  id         Int         @id @default(autoincrement())
+  name       String
+  lastName   String
+  rut        String
+  Grade      Grade       @relation(fields: [gradeId], references: [id])
+  gradeId    Int
+  Objectives Objective[]
 
   @@index([gradeId])
 }
 
-model StudentScoresByObjective {
-  id              Int       @id @default(autoincrement())
-  firstTermScore  Int       @default(0)
-  secondTermScore Int       @default(0)
-  thirdTermScore  Int       @default(0)
-  Objective       Objective @relation(fields: [objectiveId], references: [id])
-  objectiveId     Int       @unique
-  Student         Student   @relation(fields: [studentId], references: [id])
-  studentId       Int
-
-  @@index([studentId, objectiveId])
-}
-
 model Objective {
-  id                       Int                       @id @default(autoincrement())
-  description              String                    @db.VarChar(500)
-  level                    Int // nivel 1, 2 o 3
-  ParentCore               Core                      @relation(fields: [parentCoreId], references: [id])
-  parentCoreId             Int // pertenece a un nucleo
-  StudentScoresByObjective StudentScoresByObjective?
+  id              Int      @id @default(autoincrement())
+  description     String   @db.VarChar(500)
+  level           Int // nivel 1, 2 o 3
+  ParentCore      Core     @relation(fields: [parentCoreId], references: [id])
+  parentCoreId    Int // pertenece a un nucleo
+  firstTermScore  Int
+  secondTermScore Int
+  thirdTermScore  Int
+  Student         Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId       Int?
 
   @@index([parentCoreId])
 }
@@ -54,20 +45,20 @@ model Grade {
   @@unique([classroom, section])
 }
 
+model Category {
+  id          Int    @id
+  description String
+  Core        Core[]
+}
+
 model Core {
-  id          Int         @id @default(autoincrement())
+  id          Int         @id
   description String
   Objective   Objective[]
   Category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  Int
 
   @@index([categoryId])
-}
-
-model Category {
-  id          Int    @id @default(autoincrement())
-  description String
-  Core        Core[]
 }
 
 model Teacher {

@@ -1,83 +1,13 @@
-import type { Prisma, PrismaClient } from '@prisma/client'
+import type { Prisma, PrismaClient, Student } from '@prisma/client'
 
-export async function generateCurriculum(
+export async function generateCurriculumForStudent(
   prisma: PrismaClient<
     Prisma.PrismaClientOptions,
     never,
     Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-  >
+  >,
+  studentId: number
 ) {
-  // Ambitos ///////////////////
-
-  const categoryA = await prisma.category.create({
-    data: {
-      description: 'Desarrollo Personal y Social',
-    },
-  })
-  const categoryB = await prisma.category.create({
-    data: {
-      description: 'Comunicación Integral',
-    },
-  })
-  const categoryC = await prisma.category.create({
-    data: {
-      description: 'Interacción y Comprensión del Entorno',
-    },
-  })
-
-  // Nucleos ////////////////////
-  const coreA = await prisma.core.create({
-    data: {
-      description: 'Identidad y Autonomía',
-      categoryId: categoryA.id,
-    },
-  })
-  const coreB = await prisma.core.create({
-    data: {
-      description: 'Convivencia y Ciudadanía',
-      categoryId: categoryA.id,
-    },
-  })
-  const coreC = await prisma.core.create({
-    data: {
-      description: 'Corporalidad y Movimiento',
-      categoryId: categoryA.id,
-    },
-  })
-
-  const coreD = await prisma.core.create({
-    data: {
-      description: 'Lenguaje Verbal',
-      categoryId: categoryB.id,
-    },
-  })
-  const coreE = await prisma.core.create({
-    data: {
-      description: 'Lenguajes Artísticos',
-      categoryId: categoryB.id,
-    },
-  })
-  const coreF = await prisma.core.create({
-    data: {
-      description: 'Exploración del Entorno Natural',
-      categoryId: categoryC.id,
-    },
-  })
-  const coreG = await prisma.core.create({
-    data: {
-      description: 'Comprensión del Entorno Sociocultural',
-      categoryId: categoryC.id,
-    },
-  })
-  const coreH = await prisma.core.create({
-    data: {
-      description: 'Pensamiento Matemático',
-      categoryId: categoryC.id,
-    },
-  })
-
-  // Objetivos ////////////////////
-
   const OA_1 = [
     'Expresar vocal, gestual o corporalmente distintas necesidades o emociones (alegría, miedo, pena, entre otras).',
     'Manifestar satisfacción cuando percibe que adultos significativos le expresan afecto.',
@@ -125,7 +55,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 1,
-          parentCoreId: coreA.id,
+          parentCoreId: 1,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -138,7 +72,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 2,
-          parentCoreId: coreA.id,
+          parentCoreId: 1,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -151,7 +89,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 3,
-          parentCoreId: coreA.id,
+          parentCoreId: 1,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -200,7 +142,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 1,
-          parentCoreId: coreB.id,
+          parentCoreId: 2,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -212,7 +158,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 2,
-          parentCoreId: coreB.id,
+          parentCoreId: 2,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -225,7 +175,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 3,
-          parentCoreId: coreB.id,
+          parentCoreId: 2,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -271,7 +225,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 1,
-          parentCoreId: coreC.id,
+          parentCoreId: 3,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -284,7 +242,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 2,
-          parentCoreId: coreC.id,
+          parentCoreId: 3,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -297,7 +259,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 3,
-          parentCoreId: coreC.id,
+          parentCoreId: 3,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -345,7 +311,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 1,
-          parentCoreId: coreD.id,
+          parentCoreId: 4,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -358,7 +328,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 2,
-          parentCoreId: coreD.id,
+          parentCoreId: 4,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -371,7 +345,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 3,
-          parentCoreId: coreD.id,
+          parentCoreId: 4,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -413,7 +391,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 1,
-          parentCoreId: coreE.id,
+          parentCoreId: 5,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -426,7 +408,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 2,
-          parentCoreId: coreE.id,
+          parentCoreId: 5,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -439,7 +425,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 3,
-          parentCoreId: coreE.id,
+          parentCoreId: 5,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -487,7 +477,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 1,
-          parentCoreId: coreF.id,
+          parentCoreId: 6,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -500,7 +494,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 2,
-          parentCoreId: coreF.id,
+          parentCoreId: 6,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -513,7 +511,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 3,
-          parentCoreId: coreF.id,
+          parentCoreId: 6,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -558,7 +560,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 1,
-          parentCoreId: coreG.id,
+          parentCoreId: 7,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -571,7 +577,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 2,
-          parentCoreId: coreG.id,
+          parentCoreId: 7,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -584,7 +594,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 3,
-          parentCoreId: coreG.id,
+          parentCoreId: 7,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -634,7 +648,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 1,
-          parentCoreId: coreH.id,
+          parentCoreId: 8,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -647,7 +665,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 2,
-          parentCoreId: coreH.id,
+          parentCoreId: 8,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )
@@ -660,7 +682,11 @@ export async function generateCurriculum(
         data: {
           description: item,
           level: 3,
-          parentCoreId: coreH.id,
+          parentCoreId: 8,
+          firstTermScore: 0,
+          secondTermScore: 0,
+          thirdTermScore: 0,
+          studentId: studentId,
         },
       })
   )

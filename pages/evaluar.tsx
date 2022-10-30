@@ -3,178 +3,105 @@ import type {
   Core,
   Objective,
   Student,
-  StudentScoresByObjective,
 } from '@prisma/client'
-import {
-  Mutation,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import GradeSelector from '../components/GradeSelector'
+import SimpleStudentList from '../components/SimpleStudentList'
 import Layout from '../components/UI/Layout'
+import { CustomGrade } from '../types/app'
 
 const TERMS = ['Inicio', 'Intermedia', 'Final']
 
 const Evaluar = () => {
-  const queryClient = useQueryClient()
-  const [students, setStudents] = useState<Student[]>([])
-  const [openSearch, setOpenSearch] = useState(false)
-  const [currentStudentId, setCurrentStudentId] = useState<
-    number | null
-  >(null)
-  const [currentStudentName, setCurrentStudentName] = useState<
-    string | null
-  >(null)
-  const [currentTerm, setCurrentTerm] = useState<string | null>(null)
-  const [currentCategory, setCurrentCategory] = useState<
-    number | null
-  >(null)
-  const [currentCore, setCurrentCore] = useState<number | null>(null)
+  const [grade, setGrade] = useState<CustomGrade>({
+    classroom: null,
+    section: null,
+  })
 
-  const scoreMutation = useMutation(
-    ({ value, id }: { value: string; id: number }) =>
-      handleScore(value, id),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['scores'])
-      },
+  const [currentSelection, setCurrentSelection] = useState({
+    term: '',
+    student: 0,
+    category: 0,
+    core: 0,
+  })
+
+  const categories = useQuery(
+    ['categories', currentSelection.category, currentSelection.term],
+    () => {
+      return fetch('/api/get-categories', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((res) => res.json()) as Promise<Category[]>
     }
   )
 
-  const studentsQuery = useQuery(
-    ['filtered-students'],
-    (): Promise<Student[]> =>
-      fetch('/api/get-students', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      }).then((res) => res.json())
-  )
-
-  const categoryQuery = useQuery(
-    ['categories'],
-    (): Promise<Category[]> =>
-      fetch('/api/get-category', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      }).then((res) => res.json())
-  )
-  const coreQuery = useQuery(
-    ['cores'],
-    (): Promise<Core[]> =>
-      fetch('/api/get-core', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      }).then((res) => res.json())
-  )
-
-  const objectiveQuery = useQuery(
-    ['objectives'],
-    (): Promise<Objective[]> =>
-      fetch('/api/get-objective', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      }).then((res) => res.json())
-  )
-
-  const scoresQuery = useQuery(
-    ['scores'],
-    (): Promise<StudentScoresByObjective[]> =>
-      fetch('/api/get-scores', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      }).then((res) => res.json())
-  )
-
-  function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
-    setOpenSearch(true)
-    setCurrentStudentName(event.target.name)
-    const reg = new RegExp(event.target.value, 'gi')
-    if (studentsQuery.data && event.target.value.length > 0) {
-      const filtered = studentsQuery.data.filter(
-        (item) => item.name.match(reg) || item.lastName.match(reg)
-      )
-      setStudents(filtered)
-    } else setStudents([])
-  }
-
-  function handleScore(value: string, id: number) {
-    return fetch('/api/set-score', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        studentId: currentStudentId,
-        objectiveId: id,
-        value: parseInt(value),
-        term: currentTerm,
-      }),
-    })
-  }
-
-  function getObjectiveScore(objectiveId: number) {
-    const scores = scoresQuery.data?.find((item) => {
-      item.objectiveId === objectiveId &&
-        item.studentId === currentStudentId
-    })
-
-    if (currentTerm === TERMS[0]) {
-      return scores?.firstTermScore
+  const filteredCores = useQuery(
+    ['cores', currentSelection.core],
+    () => {
+      return fetch('/api/get-cores', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          categoryId: currentSelection.category,
+        }),
+      }).then((res) => res.json()) as Promise<Core[]>
     }
-    if (currentTerm === TERMS[1]) {
-      return scores?.secondTermScore
+  )
+  const filteredObjectives = useQuery(
+    ['objectives', currentSelection.term],
+    () => {
+      return fetch('/api/get-objectives', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          coreId: currentSelection.core,
+        }),
+      }).then((res) => res.json()) as Promise<Objective[]>
     }
-    if (currentTerm === TERMS[2]) {
-      return scores?.thirdTermScore
-    }
-  }
+  )
+
+  // TODO: Make custom hooks qieh each query
 
   return (
     <Layout>
       <div className="grid grid-cols-2 gap-10">
         <div>
           <div className="flex flex-col">
-            <label>Buscar</label>
-            <input
-              className="border border-gray-600"
-              onChange={handleSearch}
-              type="search"
-              value={currentStudentName ? currentStudentName : ''}
+            <GradeSelector
+              grade={grade}
+              handleGradeChange={setGrade}
             />
-            <ul className="border border-gray-600 flex flex-col gap-1">
-              {studentsQuery.isLoading ? (
-                <li>'loading data...'</li>
-              ) : (
-                students.map((student) => {
-                  if (openSearch) {
-                    return (
-                      <li
-                        className="hover:bg-gray-600 hover:text-gray-100 py-1 px-2"
-                        key={student.id}
-                        onClick={() => {
-                          setOpenSearch(false)
-                          setCurrentStudentId(student.id)
-                          setCurrentStudentName(
-                            `${student.name} ${student.lastName}`
-                          )
-                        }}
-                      >
-                        {student.name} {student.lastName}
-                      </li>
-                    )
-                  }
-                })
-              )}
-            </ul>
+            {grade?.classroom && grade?.section ? (
+              <SimpleStudentList
+                grade={grade}
+                currentSelection={currentSelection}
+                setCurrentSelection={setCurrentSelection}
+              />
+            ) : (
+              <p>Elige la clase y la seccion😊</p>
+            )}
           </div>
 
           <h2>Tipo de evaluacion</h2>
           <div className="flex flex-row gap-1">
             {TERMS.map((term) => (
               <span
-                onClick={() => setCurrentTerm(term)}
+                onClick={() => {
+                  setCurrentSelection({
+                    ...currentSelection,
+                    term: term,
+                  })
+                }}
                 key={term}
                 className={`p-1 border ${
-                  currentTerm === term
+                  currentSelection.term === term
                     ? 'border-green-600 bg-gray-700 text-white'
                     : 'border-gray-600'
                 }`}
@@ -188,15 +115,20 @@ const Evaluar = () => {
             <div>
               <h2>Ambitos de aprendizaje</h2>
               <div className="flex flex-col gap-1">
-                {categoryQuery.isLoading ? (
+                {categories.isLoading ? (
                   <p>...loading</p>
                 ) : (
-                  categoryQuery.data?.map((cat) => (
+                  categories.data?.map((cat) => (
                     <div
                       key={cat.id}
-                      onClick={() => setCurrentCategory(cat.id)}
+                      onClick={() =>
+                        setCurrentSelection({
+                          ...currentSelection,
+                          category: cat.id,
+                        })
+                      }
                       className={`p-1 border ${
-                        currentCategory === cat.id
+                        currentSelection.category === cat.id
                           ? 'border-green-600 bg-gray-700 text-white'
                           : 'border-gray-600'
                       }`}
@@ -204,11 +136,8 @@ const Evaluar = () => {
                       <p>{cat.description}</p>
                       <div>
                         0/
-                        {
-                          coreQuery.data?.filter(
-                            (item) => item.categoryId === cat.id
-                          ).length
-                        }
+                        {filteredCores.isSuccess &&
+                          filteredCores.data?.length}
                       </div>
                     </div>
                   ))
@@ -219,33 +148,32 @@ const Evaluar = () => {
             <div>
               <h2>Nucleos de aprendizaje</h2>
               <div className="flex flex-col gap-1">
-                {coreQuery.isLoading ? (
+                {filteredCores.isLoading ? (
                   <p>...loading</p>
                 ) : (
-                  coreQuery.data?.map((core) => {
-                    if (core.categoryId === currentCategory)
-                      return (
-                        <div
-                          key={core.id}
-                          onClick={() => setCurrentCore(core.id)}
-                          className={`p-1 border ${
-                            currentCore === core.id
-                              ? 'border-green-600 bg-gray-700 text-white'
-                              : 'border-gray-600'
-                          }`}
-                        >
-                          <p>{core.description}</p>
-                          <div>
-                            0/
-                            {
-                              objectiveQuery.data?.filter(
-                                (item) =>
-                                  item.parentCoreId === core.id
-                              ).length
-                            }
-                          </div>
+                  filteredCores.data?.map((core) => {
+                    return (
+                      <div
+                        key={core.id}
+                        onClick={() =>
+                          setCurrentSelection({
+                            ...currentSelection,
+                            core: core.id,
+                          })
+                        }
+                        className={`p-1 border ${
+                          currentSelection.core === core.id
+                            ? 'border-green-600 bg-gray-700 text-white'
+                            : 'border-gray-600'
+                        }`}
+                      >
+                        <p>{core.description}</p>
+                        <div>
+                          0/
+                          {filteredObjectives.data?.length}
                         </div>
-                      )
+                      </div>
+                    )
                   })
                 )}
               </div>
@@ -253,7 +181,7 @@ const Evaluar = () => {
           </div>
         </div>
 
-        <div>
+        {/* <div>
           <h2>Objetivos / {currentTerm}</h2>
           {objectiveQuery.isLoading ? (
             <p>loading...</p>
@@ -275,7 +203,13 @@ const Evaluar = () => {
                             id: obj.id,
                           })
                         }
-                        value={getObjectiveScore(obj.id)}
+                        value={
+                          currentTerm === TERMS[0]
+                            ? obj.firstTermScore
+                            : currentTerm === TERMS[1]
+                            ? obj.secondTermScore
+                            : obj.thirdTermScore
+                        }
                       >
                         <option value={0}>N/O</option>
                         <option value={1}>1</option>
@@ -290,7 +224,7 @@ const Evaluar = () => {
               })}
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     </Layout>
   )

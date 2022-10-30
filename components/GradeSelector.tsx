@@ -1,24 +1,18 @@
 import { Grade } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 import { SetStateAction, useState } from 'react'
+import { CustomGrade } from '../types/app'
 
 interface Props {
-  classroom: string | null
-  section: string | null
-  handleClassroomChange: React.Dispatch<SetStateAction<string | null>>
-  handleSectionChange: React.Dispatch<SetStateAction<string | null>>
+  grade: CustomGrade
+  handleGradeChange: React.Dispatch<SetStateAction<CustomGrade>>
 }
 
-const GradeSelector = ({
-  classroom,
-  section,
-  handleClassroomChange,
-  handleSectionChange,
-}: Props) => {
+const GradeSelector = ({ grade, handleGradeChange }: Props) => {
   const { isLoading, data } = useQuery(['grades'], getSections)
 
   const sections = data?.filter(
-    (item) => item.classroom === classroom
+    (item) => item.classroom === grade?.classroom
   )
 
   function getSections(): Promise<Grade[]> {
@@ -34,22 +28,28 @@ const GradeSelector = ({
     <div>
       <select
         onChange={(event) => {
-          handleClassroomChange(event.target.value)
-          handleSectionChange(null)
+          handleGradeChange({
+            ...grade,
+            classroom: event.target.value,
+            section: '',
+          })
         }}
       >
-        {!classroom && <option>---</option>}
+        {!grade?.classroom && <option>---</option>}
         <option value="NT1">NT1</option>
         <option value="NT2">NT2</option>
       </select>
 
       <select
         onChange={(event) => {
-          handleSectionChange(event.target.value)
+          handleGradeChange({
+            ...grade,
+            section: event.target.value,
+          })
         }}
         className="border border-gray-600 p-2"
       >
-        {!section && <option>---</option>}
+        {!grade?.section && <option>---</option>}
         {sections?.map((classroom) => (
           <option value={classroom.section} key={classroom.id}>
             {classroom.section}

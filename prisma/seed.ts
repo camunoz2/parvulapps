@@ -1,63 +1,41 @@
-import { Prisma, PrismaClient } from '@prisma/client'
-import { generateCurriculum } from './seed-curriculum'
+import { Prisma, PrismaClient, Student } from '@prisma/client'
+import { generateCurriculumForStudent } from './seed-curriculum'
 import { faker } from '@faker-js/faker'
 
 const prisma = new PrismaClient()
 
 async function main() {
   // Clean DB
-  await prisma.student.deleteMany()
-  await prisma.grade.deleteMany()
-  await prisma.studentScoresByObjective.deleteMany()
-  await prisma.core.deleteMany()
-  await prisma.category.deleteMany()
-  await prisma.teacher.deleteMany()
+  const dStudent = await prisma.student.deleteMany()
+  console.log('deleted students: ', dStudent)
 
-  // Create Curriculum
-  await generateCurriculum(prisma)
+  const dObjective = await prisma.objective.deleteMany()
+  console.log('deleted objectives: ', dObjective)
 
-  // Create Grades
+  const dGrade = await prisma.grade.deleteMany()
+  console.log('deleted grades: ', dGrade)
+
+  const dCore = await prisma.core.deleteMany()
+  console.log('deleted cores: ', dCore)
+
+  const dCategory = await prisma.category.deleteMany()
+  console.log('deleted categories: ', dCategory)
+
+  const dTeacher = await prisma.teacher.deleteMany()
+  console.log('deleted teachers: ', dTeacher)
+
+  // Create Grade
   const nt1A = await prisma.grade.create({
     data: {
       classroom: 'NT1',
       section: 'A',
     },
-    select: {
-      id: true,
-    },
   })
-  const nt1B = await prisma.grade.create({
-    data: {
-      classroom: 'NT1',
-      section: 'B',
-    },
-    select: {
-      id: true,
-    },
-  })
-  const nt2A = await prisma.grade.create({
-    data: {
-      classroom: 'NT2',
-      section: 'A',
-    },
-    select: {
-      id: true,
-    },
-  })
-  const nt2B = await prisma.grade.create({
-    data: {
-      classroom: 'NT2',
-      section: 'B',
-    },
-    select: {
-      id: true,
-    },
-  })
+  console.log('create grade: ', nt1A)
 
   // Create students
-
-  for (let i = 0; i < 15; i++) {
-    await prisma.student.create({
+  for (let i = 0; i < 2; i++) {
+    const student = await prisma.student.create({
       data: {
         name: faker.name.firstName(),
         lastName: faker.name.lastName(),
@@ -69,49 +47,107 @@ async function main() {
         },
       },
     })
+    console.log('create student: ', student)
   }
-  for (let i = 0; i < 21; i++) {
-    await prisma.student.create({
-      data: {
-        name: faker.name.firstName(),
-        lastName: faker.name.lastName(),
-        rut: faker.random.numeric(9),
-        Grade: {
-          connect: {
-            id: nt1B.id,
-          },
-        },
-      },
-    })
-  }
-  for (let i = 0; i < 23; i++) {
-    await prisma.student.create({
-      data: {
-        name: faker.name.firstName(),
-        lastName: faker.name.lastName(),
-        rut: faker.random.numeric(9),
-        Grade: {
-          connect: {
-            id: nt2A.id,
-          },
-        },
-      },
-    })
-  }
-  for (let i = 0; i < 27; i++) {
-    await prisma.student.create({
-      data: {
-        name: faker.name.firstName(),
-        lastName: faker.name.lastName(),
-        rut: faker.random.numeric(9),
-        Grade: {
-          connect: {
-            id: nt2B.id,
-          },
-        },
-      },
-    })
-  }
+
+  // Create categories
+  const categoryA = await prisma.category.create({
+    data: {
+      id: 1,
+      description: 'Desarrollo Personal y Social',
+    },
+  })
+  const categoryB = await prisma.category.create({
+    data: {
+      id: 2,
+      description: 'Comunicación Integral',
+    },
+  })
+  const categoryC = await prisma.category.create({
+    data: {
+      id: 3,
+      description: 'Interacción y Comprensión del Entorno',
+    },
+  })
+  console.log('created categories: ', categoryA, categoryB, categoryC)
+
+  // Create cores
+
+  const coreA = await prisma.core.create({
+    data: {
+      id: 1,
+      description: 'Identidad y Autonomía',
+      categoryId: 1,
+    },
+  })
+  const coreB = await prisma.core.create({
+    data: {
+      id: 2,
+      description: 'Convivencia y Ciudadanía',
+      categoryId: 1,
+    },
+  })
+  const coreC = await prisma.core.create({
+    data: {
+      id: 3,
+      description: 'Corporalidad y Movimiento',
+      categoryId: 1,
+    },
+  })
+
+  const coreD = await prisma.core.create({
+    data: {
+      id: 4,
+      description: 'Lenguaje Verbal',
+      categoryId: 2,
+    },
+  })
+  const coreE = await prisma.core.create({
+    data: {
+      id: 5,
+      description: 'Lenguajes Artísticos',
+      categoryId: 2,
+    },
+  })
+  const coreF = await prisma.core.create({
+    data: {
+      id: 6,
+      description: 'Exploración del Entorno Natural',
+      categoryId: 2,
+    },
+  })
+  const coreG = await prisma.core.create({
+    data: {
+      id: 7,
+      description: 'Comprensión del Entorno Sociocultural',
+      categoryId: 3,
+    },
+  })
+  const coreH = await prisma.core.create({
+    data: {
+      id: 8,
+      description: 'Pensamiento Matemático',
+      categoryId: 3,
+    },
+  })
+
+  console.log(
+    'created cores: ',
+    coreA,
+    coreB,
+    coreC,
+    coreD,
+    coreE,
+    coreF,
+    coreG,
+    coreH
+  )
+
+  // Generate curriclum for every student
+  const students = (await prisma.student.findMany()) as Student[]
+  students.forEach((student) => {
+    generateCurriculumForStudent(prisma, student.id)
+  })
 }
 
 main()

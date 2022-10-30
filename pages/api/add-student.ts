@@ -7,7 +7,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       name: req.body.firstName,
       lastName: req.body.lastName,
       rut: req.body.rut,
-      grade: {
+      Grade: {
         connect: {
           classroom_section: {
             classroom: req.body.classroom,
