@@ -1,19 +1,20 @@
-import type {
-  Category,
-  Core,
-  Objective,
-  Student,
-} from '@prisma/client'
-import { useQuery } from '@tanstack/react-query'
+import { Objective } from '@prisma/client'
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { useState } from 'react'
 import GradeSelector from '../components/GradeSelector'
-import SimpleStudentList from '../components/SimpleStudentList'
+import StudentList from '../components/StudentList'
 import Layout from '../components/UI/Layout'
-import { CustomGrade } from '../types/app'
+import { Curriculum, CustomGrade } from '../types/app'
 
-const TERMS = ['Inicio', 'Intermedia', 'Final']
+export const TERMS = ['Inicio', 'Intermedia', 'Final']
 
 const Evaluar = () => {
+  const queryClient = useQueryClient()
+
   const [grade, setGrade] = useState<CustomGrade>({
     classroom: null,
     section: null,
@@ -26,48 +27,51 @@ const Evaluar = () => {
     core: 0,
   })
 
-  const categories = useQuery(
-    ['categories', currentSelection.category, currentSelection.term],
-    () => {
-      return fetch('/api/get-categories', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then((res) => res.json()) as Promise<Category[]>
-    }
-  )
+  const curriculum = useQuery(['curriculum'], fetchCurriculum)
 
-  const filteredCores = useQuery(
-    ['cores', currentSelection.core],
-    () => {
-      return fetch('/api/get-cores', {
+  function fetchCurriculum(): Promise<Curriculum> {
+    return fetch('/api/get-curriculum', {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    }).then((res) => res.json())
+  }
+
+  const scoreMutation = useMutation(
+    ({ value, id }: { value: number; id: number }) => {
+      return fetch('/api/set-score', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          categoryId: currentSelection.category,
+          term: currentSelection.term,
+          objectiveId: id,
+          value: value,
         }),
-      }).then((res) => res.json()) as Promise<Core[]>
-    }
-  )
-  const filteredObjectives = useQuery(
-    ['objectives', currentSelection.term],
-    () => {
-      return fetch('/api/get-objectives', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          coreId: currentSelection.core,
-        }),
-      }).then((res) => res.json()) as Promise<Objective[]>
+      })
+    },
+    {
+      onSuccess: () => queryClient.invalidateQueries(['objectives']),
     }
   )
 
-  // TODO: Make custom hooks qieh each query
+  const objectives = useQuery(
+    ['objectives', currentSelection.term, currentSelection.student],
+    fetchObjectives
+  )
+
+  function fetchObjectives(): Promise<Objective[]> {
+    return fetch('/api/get-objectives', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((res) => res.json())
+  }
+
+  //TODO: If I change student, i sshould choose a term again
 
   return (
     <Layout>
@@ -79,7 +83,7 @@ const Evaluar = () => {
               handleGradeChange={setGrade}
             />
             {grade?.classroom && grade?.section ? (
-              <SimpleStudentList
+              <StudentList
                 grade={grade}
                 currentSelection={currentSelection}
                 setCurrentSelection={setCurrentSelection}
@@ -89,124 +93,132 @@ const Evaluar = () => {
             )}
           </div>
 
-          <h2>Tipo de evaluacion</h2>
-          <div className="flex flex-row gap-1">
-            {TERMS.map((term) => (
-              <span
-                onClick={() => {
-                  setCurrentSelection({
-                    ...currentSelection,
-                    term: term,
-                  })
-                }}
-                key={term}
-                className={`p-1 border ${
-                  currentSelection.term === term
-                    ? 'border-green-600 bg-gray-700 text-white'
-                    : 'border-gray-600'
-                }`}
-              >
-                {term}
-              </span>
-            ))}
-          </div>
-
-          <div className="flex flex-col gap-6">
+          {currentSelection.student ? (
             <div>
-              <h2>Ambitos de aprendizaje</h2>
-              <div className="flex flex-col gap-1">
-                {categories.isLoading ? (
-                  <p>...loading</p>
-                ) : (
-                  categories.data?.map((cat) => (
-                    <div
-                      key={cat.id}
-                      onClick={() =>
-                        setCurrentSelection({
-                          ...currentSelection,
-                          category: cat.id,
-                        })
-                      }
-                      className={`p-1 border ${
-                        currentSelection.category === cat.id
-                          ? 'border-green-600 bg-gray-700 text-white'
-                          : 'border-gray-600'
-                      }`}
-                    >
-                      <p>{cat.description}</p>
-                      <div>
-                        0/
-                        {filteredCores.isSuccess &&
-                          filteredCores.data?.length}
-                      </div>
-                    </div>
-                  ))
-                )}
+              <h2>Tipo de evaluacion</h2>
+              <div className="flex flex-row gap-1">
+                {TERMS.map((term) => (
+                  <span
+                    onClick={() => {
+                      setCurrentSelection({
+                        ...currentSelection,
+                        term: term,
+                      })
+                      curriculum.refetch()
+                    }}
+                    key={term}
+                    className={`p-1 border ${
+                      currentSelection.term === term
+                        ? 'border-green-600 bg-gray-700 text-white'
+                        : 'border-gray-600'
+                    }`}
+                  >
+                    {term}
+                  </span>
+                ))}
               </div>
             </div>
+          ) : (
+            ''
+          )}
 
-            <div>
-              <h2>Nucleos de aprendizaje</h2>
-              <div className="flex flex-col gap-1">
-                {filteredCores.isLoading ? (
-                  <p>...loading</p>
-                ) : (
-                  filteredCores.data?.map((core) => {
-                    return (
+          <div className="flex flex-col gap-6">
+            {currentSelection.term ? (
+              <div>
+                <h2>Ambitos de aprendizaje</h2>
+                <div className="flex flex-col gap-1">
+                  {curriculum.isLoading ? (
+                    <p>...loading</p>
+                  ) : (
+                    curriculum.data?.categories.map((cat) => (
                       <div
-                        key={core.id}
+                        key={cat.id}
                         onClick={() =>
                           setCurrentSelection({
                             ...currentSelection,
-                            core: core.id,
+                            category: cat.id,
                           })
                         }
                         className={`p-1 border ${
-                          currentSelection.core === core.id
+                          currentSelection.category === cat.id
                             ? 'border-green-600 bg-gray-700 text-white'
                             : 'border-gray-600'
                         }`}
                       >
-                        <p>{core.description}</p>
-                        <div>
-                          0/
-                          {filteredObjectives.data?.length}
-                        </div>
+                        <p>{cat.description}</p>
                       </div>
-                    )
-                  })
-                )}
+                    ))
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (
+              ''
+            )}
+
+            {currentSelection.category ? (
+              <div>
+                <h2>Nucleos de aprendizaje</h2>
+                <div className="flex flex-col gap-1">
+                  {curriculum.isLoading ? (
+                    <p>...loading</p>
+                  ) : (
+                    curriculum.data?.cores.map((core) => {
+                      return (
+                        <div
+                          key={core.id}
+                          onClick={() =>
+                            setCurrentSelection({
+                              ...currentSelection,
+                              core: core.id,
+                            })
+                          }
+                          className={`p-1 border ${
+                            currentSelection.core === core.id
+                              ? 'border-green-600 bg-gray-700 text-white'
+                              : 'border-gray-600'
+                          }`}
+                        >
+                          <p>{core.description}</p>
+                        </div>
+                      )
+                    })
+                  )}
+                </div>
+              </div>
+            ) : (
+              ''
+            )}
           </div>
         </div>
 
-        {/* <div>
-          <h2>Objetivos / {currentTerm}</h2>
-          {objectiveQuery.isLoading ? (
+        <div>
+          <h2>Objetivos / {currentSelection.term}</h2>
+          {objectives.isLoading ? (
             <p>loading...</p>
           ) : (
             <div className="flex flex-col gap-2">
-              {objectiveQuery.data?.map((obj) => {
-                if (obj.parentCoreId === currentCore) {
+              {objectives.data?.map((obj) => {
+                if (
+                  obj.parentCoreId === currentSelection.core &&
+                  obj.studentId === currentSelection.student
+                ) {
                   return (
                     <div
                       key={obj.id}
                       className="border border-gray-500 rounded-sm py-6 px-4 flex gap-4 items-center justify-between"
                     >
                       <p>{obj.description}</p>
-
                       <select
-                        onChange={(event) =>
+                        onChange={(event) => {
                           scoreMutation.mutate({
-                            value: event.target.value,
+                            value: parseInt(event.target.value),
                             id: obj.id,
                           })
-                        }
+                        }}
                         value={
-                          currentTerm === TERMS[0]
+                          currentSelection.term === TERMS[0]
                             ? obj.firstTermScore
-                            : currentTerm === TERMS[1]
+                            : currentSelection.term === TERMS[1]
                             ? obj.secondTermScore
                             : obj.thirdTermScore
                         }
@@ -224,7 +236,7 @@ const Evaluar = () => {
               })}
             </div>
           )}
-        </div> */}
+        </div>
       </div>
     </Layout>
   )

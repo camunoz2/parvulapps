@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import GradeSelector from '../components/GradeSelector'
 import StudentCreator from '../components/StudentCreator'
-import StudentList from '../components/StudentList'
+import EditableStudentList from '../components/EditableStudentList'
 import Layout from '../components/UI/Layout'
 import { CustomGrade } from '../types/app'
 
@@ -20,7 +20,7 @@ const Agregar = () => {
             classroom={grade.classroom}
             section={grade.section}
           />
-          <StudentList
+          <EditableStudentList
             classroom={grade.classroom}
             section={grade.section}
           />

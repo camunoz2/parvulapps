@@ -2,12 +2,14 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === 'POST') {
+  try {
     const obj = await prisma.objective.findMany({
       where: {
-        parentCoreId: req.body.coreId,
+        studentId: req.body.studentId,
       },
     })
-    res.status(200).send(obj)
-  } else res.status(400).send('Only accepts get request!')
+    res.status(200).json(obj)
+  } catch (e) {
+    console.error(e)
+  }
 }

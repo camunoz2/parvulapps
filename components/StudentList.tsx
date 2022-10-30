@@ -1,176 +1,60 @@
 import { Student } from '@prisma/client'
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
-import TableCell from './UI/TableCell'
+import { useQuery } from '@tanstack/react-query'
+import { CustomGrade } from '../types/app'
 
-interface Props {
-  classroom: string
-  section: string
+interface Selection {
+  term: string
+  student: number
+  category: number
+  core: number
 }
 
-const StudentList = ({ classroom, section }: Props) => {
-  const queryClient = useQueryClient()
-  const [edit, setEdit] = useState(false)
-  const [openModal, setOpenModal] = useState(false)
-  const [updatedStudent, setUpdatedStudent] = useState({
-    id: 0,
-    firstName: '',
-    lastName: '',
-    rut: '',
-  })
+interface Props {
+  grade: CustomGrade
+  currentSelection: Selection
+  setCurrentSelection: React.Dispatch<Selection>
+}
 
-  const updateStudentMutation = useMutation(
-    (id: number) => updateStudent(id),
-    {
-      onSuccess: () =>
-        queryClient.invalidateQueries(['filtered-students']),
-    }
-  )
-  const deleteStudentMutation = useMutation(
-    (id: number) => deleteStudent(id),
-    {
-      onSuccess: () =>
-        queryClient.invalidateQueries(['filtered-students']),
-    }
-  )
-
+const StudentList = ({
+  grade,
+  currentSelection,
+  setCurrentSelection,
+}: Props) => {
   const students = useQuery(
-    ['filtered-students', classroom, section],
+    ['filtered-students'],
     (): Promise<Student[]> => {
       return fetch('/api/get-students', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          classroom,
-          section,
+          classroom: grade.classroom,
+          section: grade.section,
         }),
       }).then((res) => res.json())
     }
   )
 
-  function updateStudent(id: number) {
-    return fetch('/api/update-student', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        firstName: updatedStudent.firstName,
-        lastName: updatedStudent.lastName,
-        rut: updatedStudent.rut,
-        id: id,
-      }),
-    })
-  }
-
-  function deleteStudent(id: number) {
-    return fetch('/api/delete-student', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id,
-      }),
-    })
-  }
-
-  if (students.isLoading) return <p>...loading</p>
-
   return (
-    <>
-      <div onClick={() => setEdit(!edit)}>Editar</div>
-      {openModal && (
-        <div className="absolute top-0 left-0 w-screen h-screen bg-slate-800/75 flex justify-center items-center">
-          <div className="border border-gray-500/10 flex flex-col gap-4">
-            <input
-              type="text"
-              value={updatedStudent.firstName}
-              name="firstName"
-              onChange={(event) =>
-                setUpdatedStudent({
-                  ...updatedStudent,
-                  firstName: event?.target.value,
-                })
-              }
-            />
-            <input
-              type="text"
-              value={updatedStudent.lastName}
-              name="firstName"
-              onChange={(event) =>
-                setUpdatedStudent({
-                  ...updatedStudent,
-                  lastName: event?.target.value,
-                })
-              }
-            />
-            <input
-              type="text"
-              value={updatedStudent.rut}
-              name="firstName"
-              onChange={(event) =>
-                setUpdatedStudent({
-                  ...updatedStudent,
-                  rut: event?.target.value,
-                })
-              }
-            />
-            <button
-              onClick={() => {
-                updateStudentMutation.mutate(updatedStudent.id)
-                setOpenModal(false)
-              }}
-            >
-              Aceptar
-            </button>
-          </div>
-        </div>
-      )}
-      <table className="border border-gray-800">
-        <thead>
-          <tr>
-            <td className="border border-gray-800">Nombre</td>
-            <td className="border border-gray-800">Apellido</td>
-            <td className="border border-gray-800">RUT</td>
-          </tr>
-        </thead>
-        <tbody>
-          {students.data?.map((student) => (
-            <tr key={student.id}>
-              <TableCell content={student.name} />
-              <TableCell content={student.lastName} />
-              <TableCell content={student.rut} />
-
-              {edit && (
-                <>
-                  <td
-                    onClick={() => {
-                      setUpdatedStudent({
-                        ...updatedStudent,
-                        id: student.id,
-                      })
-                      setOpenModal(true)
-                    }}
-                    className="border border-gray-800 text-xl"
-                  >
-                    ✍️
-                  </td>
-                  <td
-                    onClick={() => {
-                      deleteStudentMutation.mutate(student.id)
-                    }}
-                    className="border border-gray-800 text-xl"
-                  >
-                    🚮
-                  </td>
-                </>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
+    <ul className="flex flex-col gap-2">
+      {students.data?.map((student) => (
+        <li
+          key={student.id}
+          onClick={() =>
+            setCurrentSelection({
+              ...currentSelection,
+              student: student.id,
+            })
+          }
+          className={`p-2 border border-gray-700 ${
+            currentSelection.student === student.id
+              ? 'bg-green-400'
+              : ''
+          }`}
+        >
+          {student.name} {student.lastName}
+        </li>
+      ))}
+    </ul>
   )
 }
 

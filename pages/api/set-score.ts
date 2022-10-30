@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
+import { TERMS } from '../evaluar'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.body.term === 'Inicio') {
+  if (req.body.term === TERMS[0]) {
     await prisma.objective.update({
       where: {
         id: req.body.objectiveId,
@@ -12,7 +13,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     })
   }
-  if (req.body.term === 'Intermedia') {
+  if (req.body.term === TERMS[1]) {
     await prisma.objective.update({
       where: {
         id: req.body.objectiveId,
@@ -22,7 +23,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     })
   }
-  if (req.body.term === 'Final') {
+  if (req.body.term === TERMS[2]) {
     await prisma.objective.update({
       where: {
         id: req.body.objectiveId,
