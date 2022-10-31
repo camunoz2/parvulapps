@@ -31,10 +31,19 @@ const DashboardPage = () => {
                 <Button>Evaluar alumnos</Button>
               </a>
             </Link>
-            <Button>Ver Resultados</Button>
+            <Link href="/agregar">
+              <a>
+                <Button>Agregar alumnos</Button>
+              </a>
+            </Link>
             <Link href="/configurar">
               <a>
                 <Button>Configuracion</Button>
+              </a>
+            </Link>
+            <Link href="/resultados">
+              <a>
+                <Button>Resultados</Button>
               </a>
             </Link>
             <div onClick={() => signOut({ callbackUrl: '/login' })}>

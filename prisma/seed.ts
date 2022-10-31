@@ -32,6 +32,13 @@ async function main() {
     },
   })
   console.log('create grade: ', nt1A)
+  const nt2A = await prisma.grade.create({
+    data: {
+      classroom: 'NT2',
+      section: 'A',
+    },
+  })
+  console.log('create grade: ', nt2A)
 
   // Create students
   for (let i = 0; i < 2; i++) {
@@ -43,6 +50,21 @@ async function main() {
         Grade: {
           connect: {
             id: nt1A.id,
+          },
+        },
+      },
+    })
+    console.log('create student: ', student)
+  }
+  for (let i = 0; i < 2; i++) {
+    const student = await prisma.student.create({
+      data: {
+        name: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        rut: faker.random.numeric(9),
+        Grade: {
+          connect: {
+            id: nt2A.id,
           },
         },
       },
