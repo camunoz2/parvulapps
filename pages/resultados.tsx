@@ -23,16 +23,41 @@ const Resultados = () => {
       <table>
         <thead>
           <tr>
-            <th>Alumnos</th>
+            <th className="p-2 border border-gray-400">Alumnos</th>
             {curriculum.isLoading
               ? '...loading'
               : curriculum.data?.cores.map((item) => (
-                  <th key={item.id}>{item.description}</th>
+                  <th
+                    key={item.id}
+                    className="p-2 border border-gray-400"
+                  >
+                    {item.description}
+                  </th>
                 ))}
           </tr>
         </thead>
 
-        <tbody></tbody>
+        <tbody>
+          {results.data?.students.map((student) => {
+            return (
+              <tr key={student.id}>
+                <td className="p-2 border border-gray-400">
+                  {student.name} {student.lastName}
+                </td>
+                {results.data?.sum
+                  .filter((sum) => sum.studentId === student.id)
+                  .map((res) => (
+                    <td
+                      key={res._sum.id}
+                      className="p-2 border border-gray-400"
+                    >
+                      {res._sum.firstTermScore}
+                    </td>
+                  ))}
+              </tr>
+            )
+          })}
+        </tbody>
       </table>
     </Layout>
   )

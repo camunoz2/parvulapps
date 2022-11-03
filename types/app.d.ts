@@ -29,4 +29,5 @@ interface Sum2 {
 
 interface Sum {
   firstTermScore: number
+  id: number
 }
