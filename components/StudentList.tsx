@@ -1,5 +1,8 @@
 import { Student } from '@prisma/client'
-import { useQuery } from '@tanstack/react-query'
+import {
+  QueryObserverSuccessResult,
+  useQuery,
+} from '@tanstack/react-query'
 import { CustomGrade } from '../types/app'
 
 interface Selection {
@@ -13,47 +16,35 @@ interface Props {
   grade: CustomGrade
   currentSelection: Selection
   setCurrentSelection: React.Dispatch<Selection>
+  students: QueryObserverSuccessResult<any, unknown>
 }
 
 const StudentList = ({
-  grade,
+  students,
   currentSelection,
   setCurrentSelection,
 }: Props) => {
-  const students = useQuery(
-    ['filtered-students'],
-    (): Promise<Student[]> => {
-      return fetch('/api/get-students', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          classroom: grade.classroom,
-          section: grade.section,
-        }),
-      }).then((res) => res.json())
-    }
-  )
-
   return (
     <ul className="flex flex-col gap-2">
-      {students.data?.map((student) => (
-        <li
-          key={student.id}
-          onClick={() =>
-            setCurrentSelection({
-              ...currentSelection,
-              student: student.id,
-            })
-          }
-          className={`p-2 border border-gray-700 ${
-            currentSelection.student === student.id
-              ? 'bg-green-400'
-              : ''
-          }`}
-        >
-          {student.name} {student.lastName}
-        </li>
-      ))}
+      {students &&
+        students.data?.map((student: Student) => (
+          <li
+            key={student.id}
+            onClick={() =>
+              setCurrentSelection({
+                ...currentSelection,
+                student: student.id,
+              })
+            }
+            className={`p-2 border border-gray-700 ${
+              currentSelection.student === student.id
+                ? 'bg-green-400'
+                : ''
+            }`}
+          >
+            {student.name} {student.lastName}
+          </li>
+        ))}
     </ul>
   )
 }

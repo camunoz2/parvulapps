@@ -41,7 +41,7 @@ async function main() {
   console.log('create grade: ', nt2A)
 
   // Create students
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 15; i++) {
     const student = await prisma.student.create({
       data: {
         name: faker.name.firstName(),
@@ -56,7 +56,7 @@ async function main() {
     })
     console.log('create student: ', student)
   }
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 15; i++) {
     const student = await prisma.student.create({
       data: {
         name: faker.name.firstName(),
