@@ -12,7 +12,10 @@ const queryClient = new QueryClient()
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider session={pageProps.session}>
+      <SessionProvider
+        session={pageProps.session}
+        refetchInterval={5 * 60}
+      >
         <Component {...pageProps} />
       </SessionProvider>
     </QueryClientProvider>
