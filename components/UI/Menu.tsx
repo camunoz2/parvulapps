@@ -10,10 +10,7 @@ const Menu = () => {
 
   if (status === 'authenticated') {
     return (
-      <div
-        onClick={() => setOpen(!open)}
-        className="absolute right-10 top-10 z-30"
-      >
+      <div onClick={() => setOpen(!open)} className="z-30">
         <div className="flex flex-col gap-1">
           <div
             className={`${line} ${

@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { signIn } from 'next-auth/react'
 
 import Layout from '../components/UI/Layout'
+import Logo from '../components/UI/Logo'
 
 const LoginPage = () => {
   return (
@@ -20,10 +21,7 @@ const LoginPage = () => {
         <div className="grid grid-cols-2 items-center h-screen gap-6">
           <div className="flex flex-col gap-6 max-w-[400px]">
             <div className="flex flex-col gap-2">
-              <div className="flex gap-2">
-                <img src="/logo.svg" className="w-10" />
-                <h1 className="text-5xl font-bold">Parvulapps</h1>
-              </div>
+              <Logo />
               <h2 className="text-xl font-bold">
                 Plataforma de gestion pedagógica para la primera
                 educación.

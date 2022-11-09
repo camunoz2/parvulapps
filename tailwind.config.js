@@ -8,7 +8,7 @@ module.exports = {
       },
       colors: {
         accent: '#64CF94',
-        DEFAULT: '#090721',
+        dark: '#090721',
         lightblue: '#D6F0FC',
       },
     },

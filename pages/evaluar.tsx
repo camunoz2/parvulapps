@@ -6,8 +6,12 @@ import {
 } from '@tanstack/react-query'
 import { useState } from 'react'
 import GradeSelector from '../components/GradeSelector'
+import SideBar from '../components/SideBar'
 import StudentList from '../components/StudentList'
+import Dashed from '../components/UI/Dashed'
 import Layout from '../components/UI/Layout'
+import Logo from '../components/UI/Logo'
+import Menu from '../components/UI/Menu'
 import { Curriculum, CustomGrade } from '../types/app'
 
 export const TERMS = ['Inicio', 'Intermedia', 'Final']
@@ -74,14 +78,23 @@ const Evaluar = () => {
   //TODO: If I change student, i sshould choose a term again
 
   return (
-    <Layout>
-      <div className="grid grid-cols-2 gap-10">
-        <div>
-          <div className="flex flex-col">
-            <GradeSelector
-              grade={grade}
-              handleGradeChange={setGrade}
-            />
+    <div className="flex">
+      <SideBar />
+      <div className="flex flex-col mx-12 container">
+        <div className="flex items-center h-[110px] justify-between">
+          <Logo small />
+          <input
+            type="search"
+            className="rounded-md border border-accent fonst light px-2 h-[43px]"
+            placeholder="Buscar alumno"
+          />
+          <Menu />
+        </div>
+        <Dashed />
+
+        <div className="flex gap-2 mt-10">
+          <div>
+            <h2 className="font-bold text-2xl">Sala cuna - A</h2>
             {grade?.classroom && grade?.section ? (
               <StudentList
                 grade={grade}
@@ -91,6 +104,30 @@ const Evaluar = () => {
             ) : (
               <p>Elige la clase y la seccion😊</p>
             )}
+          </div>
+
+          <div className="flex w-full justify-between">
+            <div>
+              <h2 className="text-2xl font-bold">Mary Stehr</h2>
+              <p className="text-xs">Sala cuna - A</p>
+            </div>
+
+            <div className="bg-gradient-to-r from-[#89BABB33] to-[#0EADA759] p-4 rounded-md flex justify-center items-center">
+              <div className="flex gap-1">
+                <div className="w-10 h-2 bg-teal-300" />
+                <p>Desarrollo personal y social</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-10">
+        <div>
+          <div className="flex flex-col">
+            <GradeSelector
+              grade={grade}
+              handleGradeChange={setGrade}
+            />
           </div>
 
           {currentSelection.student ? (
@@ -238,7 +275,7 @@ const Evaluar = () => {
           )}
         </div>
       </div>
-    </Layout>
+    </div>
   )
 }
 

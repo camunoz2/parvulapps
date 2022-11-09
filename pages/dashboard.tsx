@@ -8,6 +8,7 @@ import Heading from '../components/UI/Heading'
 import Layout from '../components/UI/Layout'
 import Separator from '../components/UI/Separator'
 import Link from 'next/link'
+import ModuleButton from '../components/UI/ModuleButton'
 
 const DashboardPage = () => {
   const { data: session } = useSession()
@@ -17,39 +18,35 @@ const DashboardPage = () => {
       <Head>
         <title>Parvulapps | Configuracion</title>
       </Head>
+      <div className="absolute top-0 left-0 w-full bg-[#F6FAFF] -z-10" />
       <Layout>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <FlexColumn>
-            <Heading level={3}>Bienvenid@</Heading>
-            <Heading level={1}>
+        <div className="flex flex-col gap-24 h-screen py-32">
+          <div>
+            <p className="text-xl text-accent font-light">
+              Bienvenid@
+            </p>
+            <h1 className="text-5xl font-bold">
               {session?.user?.name ? session.user.name : 'Profesor@'}
-            </Heading>
-            <Separator gap={1} />
-            <Heading level={4}>Que quieres hacer hoy?</Heading>
-            <Link href="/evaluar">
-              <a>
-                <Button>Evaluar alumnos</Button>
-              </a>
-            </Link>
-            <Link href="/agregar">
-              <a>
-                <Button>Agregar alumnos</Button>
-              </a>
-            </Link>
-            <Link href="/configurar">
-              <a>
-                <Button>Configuracion</Button>
-              </a>
-            </Link>
-            <Link href="/resultados">
-              <a>
-                <Button>Resultados</Button>
-              </a>
-            </Link>
-            <div onClick={() => signOut({ callbackUrl: '/login' })}>
-              <Button>Cerrar Sesion</Button>
-            </div>
-          </FlexColumn>
+            </h1>
+          </div>
+
+          <div className="flex gap-2">
+            <ModuleButton
+              img="/eval_icon.svg"
+              text="Evaluar"
+              link="/evaluar"
+            />
+            <ModuleButton
+              img="/book_icon.svg"
+              text="Ver Resultados"
+              link="/resultados"
+            />
+            <ModuleButton
+              img="/add_people_icon.svg"
+              text="Configurar"
+              link="/configurar"
+            />
+          </div>
         </div>
       </Layout>
     </>
