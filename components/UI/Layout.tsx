@@ -12,7 +12,7 @@ const Layout = ({
   children: JSX.Element | JSX.Element[]
 }) => {
   return (
-    <div className="mt-24 container mx-auto">
+    <div className="container mx-auto">
       <Menu />
       <QueryClientProvider client={queryClient}>
         {children}

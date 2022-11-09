@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@faker-js/faker': ^7.6.0
+  '@fontsource/merriweather-sans': ^4.5.10
   '@prisma/client': ^4.5.0
   '@tanstack/react-query': ^4.13.0
   '@types/node': 18.11.0
@@ -21,6 +22,7 @@ specifiers:
   typescript: 4.8.4
 
 dependencies:
+  '@fontsource/merriweather-sans': 4.5.10
   '@tanstack/react-query': 4.13.0_biqbaboplfbrettd7655fr4n2y
   autoprefixer: 10.4.12_postcss@8.4.18
   next: 12.3.1_biqbaboplfbrettd7655fr4n2y
@@ -85,6 +87,10 @@ packages:
     resolution: {integrity: sha512-XK6BTq1NDMo9Xqw/YkYyGjSsg44fbNwYRx7QK2CuoQgyy+f1rrTDHoExVM5PsyXCtfl2vs2vVJ0MN0yN6LppRw==}
     engines: {node: '>=14.0.0', npm: '>=6.0.0'}
     dev: true
+
+  /@fontsource/merriweather-sans/4.5.10:
+    resolution: {integrity: sha512-YdS16z+godnW9pLW6H5JMcVB5Jb/h+tMCQ2kHWAcRua8HIrl5610cvFAYl6i9AZN4Abh31cBmAtXMHP4LzHHXg==}
+    dev: false
 
   /@humanwhocodes/config-array/0.10.7:
     resolution: {integrity: sha512-MDl6D6sBsaV452/QSdX+4CXIjZhIcI0PELsxUjk4U828yd58vk3bTIvk/6w5FY+4hIy9sLW0sfrV7K7Kc++j/w==}
