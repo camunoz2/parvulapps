@@ -1,6 +1,6 @@
-import { Student } from '@prisma/client'
+import { Grade, Student } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
-import { CustomGrade } from '../types/app'
+import { useRouter } from 'next/router'
 
 interface Selection {
   term: string
@@ -10,7 +10,6 @@ interface Selection {
 }
 
 interface Props {
-  grade: CustomGrade
   currentSelection: Selection
   setCurrentSelection: React.Dispatch<Selection>
 }
@@ -19,12 +18,22 @@ const StudentList = ({
   currentSelection,
   setCurrentSelection,
 }: Props) => {
-  const students = useQuery(['students'], () => {
-    return fetch('/api/get-students').then((res) => res.json())
+  const router = useRouter()
+
+  const students = useQuery(['students', router.query], () => {
+    return fetch('/api/get-students', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        grade: parseInt(router.query.grade as string),
+      }),
+    }).then((res) => res.json())
   })
 
   return (
-    <ul className="flex flex-col gap-2">
+    <ul className="flex flex-col gap-2 overflow-auto h-[700px] scroll-smooth">
       {students.isSuccess &&
         students.data?.map((student: Student) => (
           <li

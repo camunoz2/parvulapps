@@ -1,11 +1,7 @@
-import type { Objective, Category, Core } from '@prisma/client'
-
-export interface CustomGrade {
-  classroom: string | null
-  section: string | null
-}
+import type { Objective, Category, Core, Grade } from '@prisma/client'
 
 export interface Curriculum {
+  grade: Grade[]
   categories: Category[]
   cores: Core[]
 }
@@ -30,4 +26,11 @@ interface Sum2 {
 interface Sum {
   firstTermScore: number
   id: number
+}
+
+export interface Filter {
+  grade: Grade
+  evalType: string
+  categories: string
+  core: string
 }

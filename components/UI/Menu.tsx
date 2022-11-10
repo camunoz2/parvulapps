@@ -6,7 +6,7 @@ const Menu = () => {
   const { status } = useSession()
   const [open, setOpen] = useState(false)
 
-  const line = 'w-10 h-1 bg-gray-700 transition-all'
+  const line = 'w-8 h-1 bg-gray-700 transition-all rounded-md'
 
   if (status === 'authenticated') {
     return (

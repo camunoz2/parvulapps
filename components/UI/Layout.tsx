@@ -14,7 +14,7 @@ const Layout = ({
   children: JSX.Element | JSX.Element[]
 }) => {
   return (
-    <div className="container mx-auto text-dark">
+    <div className="container mx-auto px-6 text-dark">
       <div className="flex justify-between py-6">
         <Logo small />
         <div className="flex items-center gap-1">

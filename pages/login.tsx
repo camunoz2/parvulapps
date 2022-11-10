@@ -18,7 +18,7 @@ const LoginPage = () => {
         className="w-screen h-screen top-0 left-0 absolute -z-10"
       />
       <Layout>
-        <div className="grid grid-cols-2 items-center h-screen gap-6">
+        <div className="flex items-center justify-around gap-6 pt-10">
           <div className="flex flex-col gap-6 max-w-[400px]">
             <div className="flex flex-col gap-2">
               <Logo />

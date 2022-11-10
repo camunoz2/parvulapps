@@ -10,10 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     const filteredStudents = await prisma.student.findMany({
       where: {
-        Grade: {
-          classroom: req.body.classroom,
-          section: req.body.section,
-        },
+        gradeId: req.body.grade,
       },
     })
 
