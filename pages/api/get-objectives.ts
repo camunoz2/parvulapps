@@ -6,10 +6,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const obj = await prisma.objective.findMany({
       where: {
         studentId: req.body.studentId,
+        parentCoreId: req.body.core,
       },
     })
-    res.status(200).json(obj)
+    res.status(200).send(obj)
   } catch (e) {
     console.error(e)
+    res.status(400).send(e)
   }
 }

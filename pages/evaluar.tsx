@@ -1,4 +1,4 @@
-import { Grade, Objective } from '@prisma/client'
+import { Objective } from '@prisma/client'
 import {
   useMutation,
   useQuery,
@@ -11,29 +11,15 @@ import StudentList from '../components/StudentList'
 import Dashed from '../components/UI/Dashed'
 import Logo from '../components/UI/Logo'
 import Menu from '../components/UI/Menu'
-import { Filter } from '../types/app'
-
-//TODO: Implement proper filter with state contained in the url
 
 export const TERMS = ['Inicio', 'Intermedia', 'Final']
 
 const Evaluar = () => {
   const queryClient = useQueryClient()
 
-  const [filter, setFilter] = useState<Filter | null>()
-
-  const [currentSelection, setCurrentSelection] = useState({
-    term: '',
-    student: 0,
-    category: 0,
-    core: 0,
-  })
+  const [studentId, setStudentId] = useState(0)
 
   const router = useRouter()
-
-  useEffect(() => {
-    router.replace('/evaluar')
-  }, [])
 
   const scoreMutation = useMutation(
     ({ value, id }: { value: number; id: number }) => {
@@ -43,7 +29,7 @@ const Evaluar = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          term: currentSelection.term,
+          term: router.query.evalType,
           objectiveId: id,
           value: value,
         }),
@@ -55,20 +41,23 @@ const Evaluar = () => {
   )
 
   const objectives = useQuery(
-    ['objectives', currentSelection.term, currentSelection.student],
-    fetchObjectives
+    ['objectives', studentId, router.query],
+    (): Promise<Objective[]> => {
+      return fetch('/api/get-objectives', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          studentId: studentId,
+          core: parseInt(router.query.core as string),
+        }),
+      }).then((res) => res.json())
+    },
+    {
+      enabled: !!studentId,
+    }
   )
-
-  function fetchObjectives(): Promise<Objective[]> {
-    return fetch('/api/get-objectives', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((res) => res.json())
-  }
-
-  //TODO: If I change student, i sshould choose a term again
 
   return (
     <div className="flex bg-[#F6FAFF]">
@@ -87,7 +76,7 @@ const Evaluar = () => {
           <Dashed />
         </div>
 
-        <div className="grid grid-cols-2 mt-10 gap-4">
+        <div className="grid grid-cols-2 mt-10 gap-4 h-full auto-rows-min items-center">
           <div className="col-span-1">
             <h2 className="font-bold text-2xl">Sala cuna - A</h2>
           </div>
@@ -106,25 +95,31 @@ const Evaluar = () => {
             </div>
           </div>
 
-          <div className="col-span-1">
-            <StudentList
-              currentSelection={currentSelection}
-              setCurrentSelection={setCurrentSelection}
-            />
-          </div>
+          {!router.query.grade ? (
+            <img src="/no_results.svg" alt="" className="w-80" />
+          ) : (
+            <div className="col-span-1">
+              <StudentList
+                currentSelection={studentId}
+                setCurrentSelection={setStudentId}
+              />
+            </div>
+          )}
 
-          <div>
-            <h2>
-              Evaluación {router.query.evalType} / {router.query.core}
-            </h2>
-            {objectives.isLoading ? (
-              <p>loading...</p>
+          <div className="self-start overflow-auto h-[700px] scroll-smooth">
+            <h2>Objetivos</h2>
+            {objectives.isLoading &&
+            router.query.grade &&
+            router.query.evalType &&
+            router.query.core ? (
+              <p>Cargando...</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {objectives.data?.map((obj) => {
                   if (
-                    obj.parentCoreId === currentSelection.core &&
-                    obj.studentId === currentSelection.student
+                    obj.parentCoreId ===
+                      parseInt(router.query.core as string) &&
+                    obj.studentId === studentId
                   ) {
                     return (
                       <div
@@ -140,9 +135,9 @@ const Evaluar = () => {
                             })
                           }}
                           value={
-                            currentSelection.term === TERMS[0]
+                            router.query.evalType === TERMS[0]
                               ? obj.firstTermScore
-                              : currentSelection.term === TERMS[1]
+                              : router.query.evalType === TERMS[1]
                               ? obj.secondTermScore
                               : obj.thirdTermScore
                           }
