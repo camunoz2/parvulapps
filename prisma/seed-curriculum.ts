@@ -1,5 +1,4 @@
-import { faker } from '@faker-js/faker'
-import type { Prisma, PrismaClient, Student } from '@prisma/client'
+import type { Prisma, PrismaClient } from '@prisma/client'
 
 export async function generateCurriculumForStudent(
   prisma: PrismaClient<
