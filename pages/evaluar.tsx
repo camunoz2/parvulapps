@@ -1,4 +1,4 @@
-import { Objective } from '@prisma/client'
+import { Objective, Student } from '@prisma/client'
 import {
   useMutation,
   useQuery,
@@ -29,8 +29,14 @@ export const TERMS = [
 
 const Evaluar = () => {
   const queryClient = useQueryClient()
+  useEffect(() => {
+    router.replace('/evaluar')
+  }, [])
 
-  const [studentId, setStudentId] = useState(0)
+  const [student, setStudent] = useState({
+    name: '',
+    id: 0,
+  })
 
   const router = useRouter()
 
@@ -54,7 +60,7 @@ const Evaluar = () => {
   )
 
   const objectives = useQuery(
-    ['objectives', studentId, router.query],
+    ['objectives', student, router.query],
     (): Promise<Objective[]> => {
       return fetch('/api/get-objectives', {
         method: 'POST',
@@ -62,13 +68,13 @@ const Evaluar = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          studentId: studentId,
+          studentId: student.id,
           core: parseInt(router.query.core as string),
         }),
       }).then((res) => res.json())
     },
     {
-      enabled: !!studentId,
+      enabled: !!student.id,
     }
   )
 
@@ -96,8 +102,7 @@ const Evaluar = () => {
 
           <div className="flex justify-between col-span-1">
             <div>
-              <h2 className="text-2xl font-bold">Mary Stehr</h2>
-              <p className="text-xs">Sala cuna - A</p>
+              <h2 className="text-2xl font-bold">{student.name}</h2>
             </div>
 
             <div className="bg-gradient-to-r from-[#89BABB33] to-[#0EADA759] p-4 rounded-md">
@@ -114,8 +119,8 @@ const Evaluar = () => {
           router.query.core ? (
             <div className="col-span-1">
               <StudentList
-                currentSelection={studentId}
-                setCurrentSelection={setStudentId}
+                currentSelection={student.id}
+                setCurrentSelection={setStudent}
               />
             </div>
           ) : (
@@ -135,7 +140,7 @@ const Evaluar = () => {
                   if (
                     obj.parentCoreId ===
                       parseInt(router.query.core as string) &&
-                    obj.studentId === studentId
+                    obj.studentId === student.id
                   ) {
                     return (
                       <div

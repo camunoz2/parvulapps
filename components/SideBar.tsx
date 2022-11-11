@@ -87,7 +87,11 @@ const SideBar = () => {
                     <option>Elige una opcion</option>
                   )}
                   {TERMS.map((t) => {
-                    return <option value={t.id}>{t.name}</option>
+                    return (
+                      <option key={t.id} value={t.id}>
+                        {t.name}
+                      </option>
+                    )
                   })}
                 </select>
               </div>
@@ -126,11 +130,17 @@ const SideBar = () => {
                   {!router.query.core && (
                     <option>Elige una opcion</option>
                   )}
-                  {filtersQuery.data?.cores.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.description}
-                    </option>
-                  ))}
+                  {filtersQuery.data?.cores
+                    .filter(
+                      (core) =>
+                        core.categoryId ===
+                        parseInt(router.query.categories as string)
+                    )
+                    .map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.description}
+                      </option>
+                    ))}
                 </select>
               </div>
             </div>
