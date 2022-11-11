@@ -109,9 +109,9 @@ const Evaluar = () => {
   }
 
   return (
-    <div className="flex bg-[#F6FAFF]">
+    <div className="flex flex-col lg:flex-row bg-[#F6FAFF] h-full px-2 lg:px-0">
       <SideBar />
-      <div className="flex flex-col mx-12 container">
+      <div className="flex flex-col mx-auto lg:px-12">
         <div className="flex items-center justify-between gap-4 py-4">
           <Logo small />
           <Menu />
@@ -124,14 +124,14 @@ const Evaluar = () => {
         router.query.evalType &&
         router.query.categories &&
         router.query.core ? (
-          <div className="grid grid-cols-2 mt-10 gap-4 h-full auto-rows-min items-center">
+          <div className="grid grid-cols-2 lg:grid-cols-3 mt-10 gap-4 h-full auto-rows-min items-start">
             <div className="col-span-1">
               <h2 className="font-bold text-2xl">Alumnos</h2>
             </div>
 
             {student.id >= 0 ? (
-              <div className="flex justify-between col-span-1">
-                <div>
+              <div className="flex justify-between col-span-1 lg:col-span-2">
+                <div className="hidden lg:block">
                   <h2 className="text-2xl font-bold underline">
                     {student.name}
                   </h2>
@@ -169,11 +169,11 @@ const Evaluar = () => {
               />
             </div>
 
-            <div className="self-start overflow-auto h-[700px] scroll-smooth">
+            <div className="self-start overflow-auto h-[500px] lg:h-[700px] scroll-smooth lg:col-span-2 col-span-1 text-xs lg:text-base">
               {objectives.isLoading && student.id >= 0 ? (
                 <p>Seleccion a un alumno de la lista 👌</p>
               ) : (
-                <div className="flex flex-col gap-2">
+                <div className="grid lg:grid-cols-2 gap-2">
                   {objectives.data?.map((obj) => {
                     if (
                       obj.parentCoreId ===
@@ -183,7 +183,7 @@ const Evaluar = () => {
                       return (
                         <div
                           key={obj.id}
-                          className="border border-accent rounded-md py-6 px-4 flex gap-4 items-center justify-between bg-white shadow-md"
+                          className="border border-accent rounded-md py-6 px-4 flex flex-col lg:flex-row gap-2 lg:gap-4 items-center justify-between bg-white shadow-md"
                         >
                           <p>{obj.description}</p>
                           <select
@@ -222,7 +222,7 @@ const Evaluar = () => {
             </div>
           </div>
         ) : (
-          <div className="w-full h-full flex justify-center items-center">
+          <div className="absolute left-1/2 top-72 -translate-x-1/2">
             <img src="/no_results.svg" alt="" className="w-80" />
           </div>
         )}

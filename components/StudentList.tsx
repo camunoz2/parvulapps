@@ -31,7 +31,7 @@ const StudentList = ({
   })
 
   return (
-    <ul className="flex flex-col gap-1 overflow-auto h-[700px] scroll-smooth">
+    <ul className="flex flex-col gap-1 overflow-auto h-[500px] lg:h-[700px] scroll-smooth">
       {students.isSuccess &&
         students.data?.map((student: Student) => (
           <li
@@ -42,7 +42,7 @@ const StudentList = ({
                 id: student.id,
               })
             }
-            className={`p-2 border border-accent rounded-md ${
+            className={`p-2 border border-accent rounded-md text-sm lg:text-base ${
               currentSelection === student.id ? 'bg-green-400' : ''
             }`}
           >
