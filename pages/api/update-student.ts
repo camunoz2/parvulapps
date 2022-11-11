@@ -1,7 +1,10 @@
 import type { NextApiResponse, NextApiRequest } from 'next'
 import prisma from '../../lib/prisma'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function updateStudent(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   await prisma.student.update({
     where: {
       id: req.body.id,

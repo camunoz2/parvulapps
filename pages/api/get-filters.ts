@@ -2,10 +2,10 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
 import { Curriculum } from '../../types/app'
 
-export default async (
+export default async function getFilters(
   req: NextApiRequest,
   res: NextApiResponse<Curriculum>
-) => {
+) {
   try {
     if (req.method === 'GET') {
       const grade = await prisma.grade.findMany()

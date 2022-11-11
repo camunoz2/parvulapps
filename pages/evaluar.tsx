@@ -1,9 +1,10 @@
-import { Objective, Student } from '@prisma/client'
+import { Objective } from '@prisma/client'
 import {
   useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
+import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -43,7 +44,7 @@ const Evaluar = () => {
 
   useEffect(() => {
     router.replace('/evaluar')
-  }, [])
+  }, [''])
 
   const [student, setStudent] = useState({
     name: '',
@@ -223,7 +224,7 @@ const Evaluar = () => {
           </div>
         ) : (
           <div className="absolute left-1/2 top-72 -translate-x-1/2">
-            <img src="/no_results.svg" alt="" className="w-80" />
+            <Image src="/no_results.svg" alt="" className="w-80" />
           </div>
         )}
       </div>

@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function getStudents(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     if (req.method === 'GET') {
       const students = await prisma.student.findMany()

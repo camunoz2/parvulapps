@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function getStudentResult(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === 'GET') {
     const sum = await prisma.objective.groupBy({
       by: ['parentCoreId', 'studentId'],

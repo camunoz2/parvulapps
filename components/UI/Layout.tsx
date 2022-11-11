@@ -34,7 +34,6 @@ const Layout = ({
       </div>
 
       <Dashed />
-      <div className="divide-y divide-dashed h-[1px] w-full" />
       <QueryClientProvider client={queryClient}>
         {children}
       </QueryClientProvider>

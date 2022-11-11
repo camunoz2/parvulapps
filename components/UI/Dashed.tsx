@@ -1,5 +1,7 @@
+import Image from 'next/image'
+
 const Dashed = () => {
-  return <img src="/dashed.svg" alt="" />
+  return <Image src="/dashed.svg" width={976} height={1} alt="" />
 }
 
 export default Dashed

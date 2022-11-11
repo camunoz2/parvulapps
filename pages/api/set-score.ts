@@ -2,7 +2,10 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
 import { TERMS } from '../evaluar'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function setScore(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.body.term === TERMS[0].id) {
     console.log(req.body)
 

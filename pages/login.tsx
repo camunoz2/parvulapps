@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import { signIn } from 'next-auth/react'
+import Image from 'next/image'
 
 import Layout from '../components/UI/Layout'
 import Logo from '../components/UI/Logo'
@@ -89,11 +90,14 @@ const LoginPage = () => {
                 }
                 className="border border-accent font-bold py-3 rounded-md mt-3 flex justify-center items-center gap-4"
               >
-                <img
-                  src="/google_icon.svg"
-                  alt="google icon"
-                  className="w-6"
-                />
+                <div className="w-8">
+                  <Image
+                    width="100%"
+                    height="100%"
+                    src="/google_icon.svg"
+                    alt="google icon"
+                  />
+                </div>
                 Iniciar sesión con google
               </div>
             </div>

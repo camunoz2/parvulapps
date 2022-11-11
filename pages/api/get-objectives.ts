@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function getObjectives(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     const obj = await prisma.objective.findMany({
       where: {

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { TERMS } from '../pages/evaluar'
 import { Curriculum, Filter } from '../types/app'
@@ -58,7 +59,7 @@ const SideBar = () => {
         onClick={() => setOpen(!open)}
         className={`fixed lg:hidden flex justify-center z-10 bottom-0 left-0 py-2 px-2 bg-accent text-white w-full`}
       >
-        <img src="/add_people_icon.svg" alt="" className="h-6" />
+        <Image src="/add_people_icon.svg" alt="" className="h-6" />
       </div>
       <div
         className={`absolute lg:relative  lg:block bottom-10 lg:bottom-auto left-0 lg:left-auto ${
@@ -67,7 +68,7 @@ const SideBar = () => {
       >
         <div>
           <div className="flex items-center gap-2 bg-gradient-to-bl from-[#2D646533] to-[#0EADA712] bg-blend-lighten px-4  mb-2 lg:mb-16 py-1 lg:py-6">
-            <img className="w-12 h-12 rounded-full bg-white border" />
+            <div className="w-12 h-12 rounded-full bg-white border" />
             <div className="text-dark hidden lg:block">
               <h3 className="font-bold lg:text-xl">
                 {session?.user?.name}
@@ -179,7 +180,7 @@ const SideBar = () => {
         </div>
 
         <div className="px-4 hidden lg:flex gap-1 justify-self-end pt-32">
-          <img className="w-4" src="/settings_icon.svg" alt="" />
+          <Image className="w-4" src="/settings_icon.svg" alt="" />
           <p>Configuración</p>
         </div>
       </div>
