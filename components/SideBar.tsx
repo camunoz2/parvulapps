@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import { TERMS } from '../pages/evaluar'
@@ -11,6 +12,7 @@ interface Props {
 
 const SideBar = () => {
   const router = useRouter()
+  const { data: session, status } = useSession()
   const filtersQuery = useQuery(
     ['filters'],
     (): Promise<Curriculum> => {
@@ -43,7 +45,9 @@ const SideBar = () => {
         <div className="flex items-center gap-2 bg-gradient-to-bl from-[#2D646533] to-[#0EADA712] bg-blend-lighten px-4 mb-16 py-6">
           <img className="w-12 h-12 rounded-full bg-white border" />
           <div className="text-dark">
-            <h3 className="font-bold text-xl">Cristian Muñoz</h3>
+            <h3 className="font-bold text-xl">
+              {session?.user?.name}
+            </h3>
             <p className="text-xs font-light">Cerrar Sesión</p>
           </div>
         </div>

@@ -1,17 +1,19 @@
 import Head from 'next/head'
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 
-import Button from '../components/UI/Button'
-import CenterFull from '../components/UI/CenterFull'
-import FlexColumn from '../components/UI/FlexColumn'
-import Heading from '../components/UI/Heading'
 import Layout from '../components/UI/Layout'
-import Separator from '../components/UI/Separator'
-import Link from 'next/link'
 import ModuleButton from '../components/UI/ModuleButton'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 const DashboardPage = () => {
-  const { data: session } = useSession()
+  const router = useRouter()
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.replace('/login')
+    },
+  })
 
   return (
     <>
