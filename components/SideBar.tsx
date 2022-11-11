@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
+import { TERMS } from '../pages/evaluar'
 import { Curriculum, Filter } from '../types/app'
 
 interface Props {
@@ -85,9 +86,9 @@ const SideBar = () => {
                   {!router.query.evalType && (
                     <option>Elige una opcion</option>
                   )}
-                  <option value={0}>Diagnostica</option>
-                  <option value={1}>Intermedia</option>
-                  <option value={2}>Cierre</option>
+                  {TERMS.map((t) => {
+                    return <option value={t.id}>{t.name}</option>
+                  })}
                 </select>
               </div>
             </div>

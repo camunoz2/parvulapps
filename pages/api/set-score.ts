@@ -3,7 +3,9 @@ import prisma from '../../lib/prisma'
 import { TERMS } from '../evaluar'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.body.term === TERMS[0]) {
+  if (req.body.term === TERMS[0].id) {
+    console.log(req.body)
+
     await prisma.objective.update({
       where: {
         id: req.body.objectiveId,
@@ -13,7 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     })
   }
-  if (req.body.term === TERMS[1]) {
+  if (req.body.term === TERMS[1].id) {
     await prisma.objective.update({
       where: {
         id: req.body.objectiveId,
@@ -23,7 +25,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     })
   }
-  if (req.body.term === TERMS[2]) {
+  if (req.body.term === TERMS[2].id) {
     await prisma.objective.update({
       where: {
         id: req.body.objectiveId,

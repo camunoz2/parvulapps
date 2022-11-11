@@ -12,7 +12,20 @@ import Dashed from '../components/UI/Dashed'
 import Logo from '../components/UI/Logo'
 import Menu from '../components/UI/Menu'
 
-export const TERMS = ['Inicio', 'Intermedia', 'Final']
+export const TERMS = [
+  {
+    name: 'Diagnóstica',
+    id: 0,
+  },
+  {
+    name: 'Intermedia',
+    id: 1,
+  },
+  {
+    name: 'Final',
+    id: 2,
+  },
+]
 
 const Evaluar = () => {
   const queryClient = useQueryClient()
@@ -29,7 +42,7 @@ const Evaluar = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          term: router.query.evalType,
+          term: parseInt(router.query.evalType as string),
           objectiveId: id,
           value: value,
         }),
@@ -78,7 +91,7 @@ const Evaluar = () => {
 
         <div className="grid grid-cols-2 mt-10 gap-4 h-full auto-rows-min items-center">
           <div className="col-span-1">
-            <h2 className="font-bold text-2xl">Sala cuna - A</h2>
+            <h2 className="font-bold text-2xl">Alumnos</h2>
           </div>
 
           <div className="flex justify-between col-span-1">
@@ -95,15 +108,18 @@ const Evaluar = () => {
             </div>
           </div>
 
-          {!router.query.grade ? (
-            <img src="/no_results.svg" alt="" className="w-80" />
-          ) : (
+          {router.query.grade &&
+          router.query.grade &&
+          router.query.evalType &&
+          router.query.core ? (
             <div className="col-span-1">
               <StudentList
                 currentSelection={studentId}
                 setCurrentSelection={setStudentId}
               />
             </div>
+          ) : (
+            <img src="/no_results.svg" alt="" className="w-80" />
           )}
 
           <div className="self-start overflow-auto h-[700px] scroll-smooth">
@@ -135,9 +151,13 @@ const Evaluar = () => {
                             })
                           }}
                           value={
-                            router.query.evalType === TERMS[0]
+                            parseInt(
+                              router.query.evalType as string
+                            ) === TERMS[0].id
                               ? obj.firstTermScore
-                              : router.query.evalType === TERMS[1]
+                              : parseInt(
+                                  router.query.evalType as string
+                                ) === TERMS[1].id
                               ? obj.secondTermScore
                               : obj.thirdTermScore
                           }
