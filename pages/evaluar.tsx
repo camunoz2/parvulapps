@@ -38,7 +38,7 @@ const Evaluar = () => {
   //For controlling opening and close of student list on mobile, pass to sidebar
   const [studentListMenu, setStudentListMenu] = useState(false)
 
-  // For instructions
+  // For instructions on screen
   const [info, setInfo] = useState(true)
 
   const { status } = useSession({
@@ -195,7 +195,9 @@ const Evaluar = () => {
               </div>
             ) : (
               <div>
-                <p>Seleccion a un alumno de la lista 👌</p>
+                <p className="text-lg">
+                  Seleccion a un alumno de la lista 👌
+                </p>
               </div>
             )}
 
@@ -214,7 +216,9 @@ const Evaluar = () => {
 
             <div className="self-start overflow-auto h-[500px] lg:h-[700px] scroll-smooth lg:col-span-2 col-span-1 text-xs lg:text-base">
               {objectives.isLoading && student.id >= 0 ? (
-                <p>Seleccion a un alumno de la lista 👌</p>
+                <p className="text-lg">
+                  Seleccion a un alumno de la lista 👌
+                </p>
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
                   {objectives.data?.map((obj) => {
@@ -228,7 +232,7 @@ const Evaluar = () => {
                           key={obj.id}
                           className="border border-accent rounded-md py-6 px-4 flex flex-col lg:flex-row gap-2 lg:gap-4 items-center justify-between bg-white shadow-md"
                         >
-                          <p>{obj.description}</p>
+                          <p className="text-lg">{obj.description}</p>
                           <select
                             className="bg-white p-2 border border-accent rounded-md"
                             onChange={(event) => {

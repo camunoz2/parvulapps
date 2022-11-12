@@ -1,64 +1,58 @@
-import { useQuery } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import ResultsTable from '../components/ResultsTable'
 import Layout from '../components/UI/Layout'
-import type { Curriculum, Response } from '../types/app'
 
 const Resultados = () => {
-  const results = useQuery(['student-results'], () => {
-    return fetch('/api/get-student-result', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    }).then((res) => res.json()) as Promise<Response>
-  })
-  const curriculum = useQuery(['curriculum'], () => {
-    return fetch('/api/get-curriculum', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    }).then((res) => res.json()) as Promise<Curriculum>
+  const router = useRouter()
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.replace('/login')
+    },
   })
 
-  if (results.isLoading) return <div>...loading</div>
+  const [currentTab, setCurrentTab] = useState(0)
+  const tabs = [
+    'Resultados total por nucleo',
+    'Estadística de desempeño anual',
+    'Estadística detallada por alumno',
+  ]
 
   return (
     <Layout>
-      <table>
-        <thead>
-          <tr>
-            <th className="p-2 border border-gray-400">Alumnos</th>
-            {curriculum.isLoading
-              ? '...loading'
-              : curriculum.data?.cores.map((item) => (
-                  <th
-                    key={item.id}
-                    className="p-2 border border-gray-400"
-                  >
-                    {item.description}
-                  </th>
-                ))}
-          </tr>
-        </thead>
-
-        <tbody>
-          {results.data?.students.map((student) => {
-            return (
-              <tr key={student.id}>
-                <td className="p-2 border border-gray-400">
-                  {student.name} {student.lastName}
-                </td>
-                {results.data?.sum
-                  .filter((sum) => sum.studentId === student.id)
-                  .map((res) => (
-                    <td
-                      key={res._sum.id}
-                      className="p-2 border border-gray-400"
-                    >
-                      {res._sum.firstTermScore}
-                    </td>
-                  ))}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+      <h2 className="lg:hidden">
+        Vista solo disponible en una pantalla con una resolución mayor
+      </h2>
+      <div className="hidden gap-2 lg:flex">
+        {tabs.map((t, index) => {
+          return (
+            <div
+              key={index}
+              className="hover:bg-accent px-2 py-4 rounded-t-md border-t border-accent bg-slate-100"
+              onClick={() => setCurrentTab(index)}
+            >
+              {t}
+            </div>
+          )
+        })}
+      </div>
+      <div className="hidden gap-2 lg:flex">
+        {currentTab === 0 && <ResultsTable />}
+        {currentTab === 1 && (
+          <p>
+            Pronto... si tinen alguna sugerencia la pueden realizar al
+            mail camunoz2@gmail.com
+          </p>
+        )}
+        {currentTab === 2 && (
+          <p>
+            Pronto... si tinen alguna sugerencia la pueden realizar al
+            mail camunoz2@gmail.com
+          </p>
+        )}
+      </div>
     </Layout>
   )
 }

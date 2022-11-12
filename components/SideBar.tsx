@@ -63,14 +63,18 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
           className="flex flex-col gap-1 justify-center"
         >
           <Image src="/filter.svg" width={16} height={16} alt="" />
-          <p className="text-xs text-center">Filtrar</p>
+          <p className="text-sm text-center">Filtrar</p>
         </div>
         <div
           onClick={() => handleStudentList(!studentListMenu)}
           className="flex flex-col gap-1 justify-center"
         >
           <Image src="/book_icon.svg" width={16} height={16} alt="" />
-          <p className="text-xs text-center">
+          <p
+            className={`text-sm text-center ${
+              studentListMenu && 'animate-bounce'
+            }`}
+          >
             {studentListMenu ? 'Cerrar Lista' : 'Elegir Alumno'}
           </p>
         </div>

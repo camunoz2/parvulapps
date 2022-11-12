@@ -9,25 +9,21 @@ export interface Curriculum {
 export interface Response {
   sum: Sum2[]
   students: Student[]
-}
-
-interface Student {
-  id: number
-  name: string
-  lastName: string
+  categories: Category[]
+  cores: Core[]
+  grades: Grade[]
 }
 
 interface Sum2 {
   _sum: Sum
-  studentId: number
   parentCoreId: number
+  studentId: number
 }
 
 interface Sum {
   firstTermScore: number
   id: number
 }
-
 export interface Filter {
   grade: Grade
   evalType: string

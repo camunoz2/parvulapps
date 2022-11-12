@@ -6,6 +6,9 @@ export default async function getStudentResult(
   res: NextApiResponse
 ) {
   if (req.method === 'GET') {
+    const categories = await prisma.category.findMany()
+    const cores = await prisma.core.findMany()
+    const grades = await prisma.grade.findMany()
     const sum = await prisma.objective.groupBy({
       by: ['parentCoreId', 'studentId'],
       _sum: {
@@ -22,6 +25,6 @@ export default async function getStudentResult(
       },
     })
 
-    res.status(200).send({ sum, students })
+    res.status(200).json({ sum, students, categories, cores, grades })
   }
 }

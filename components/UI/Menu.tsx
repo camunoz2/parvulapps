@@ -10,31 +10,11 @@ const Menu = () => {
 
   if (status === 'authenticated') {
     return (
-      <div onClick={() => setOpen(!open)} className="z-30">
-        <div className="flex flex-col gap-1">
-          <div
-            className={`${line} ${
-              open ? 'rotate-45 translate-y-2 bg-white' : ''
-            }`}
-          />
-          <div
-            className={`${line} ${open ? 'opacity-0 bg-white' : ''}`}
-          />
-          <div
-            className={`${line} ${
-              open ? '-rotate-45 -translate-y-2 bg-white' : ''
-            }`}
-          />
+      <Link href="/dashboard">
+        <div className="z-30 px-2 py-2 rounded-md shadow bg-gradient-to-t from-accent to-blue-200">
+          <p>Modulos</p>
         </div>
-        {open && (
-          <div className="bg-gray-800 backdrop-blur-sm flex flex-col fixed -z-10 top-0 left-0 right-0 bottom-0 w-screen h-screen gap-4 justify-center items-center">
-            <Link href="/agregar">Agregar</Link>
-            <Link href="/evaluar">Evaluar</Link>
-            <Link href="/configurar">Configurar</Link>
-            <Link href="/dashboard">Panel</Link>
-          </div>
-        )}
-      </div>
+      </Link>
     )
   } else return <></>
 }
