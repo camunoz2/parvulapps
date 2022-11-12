@@ -59,7 +59,12 @@ const SideBar = () => {
         onClick={() => setOpen(!open)}
         className={`fixed lg:hidden flex justify-center z-10 bottom-0 left-0 py-2 px-2 bg-accent text-white w-full`}
       >
-        <Image src="/add_people_icon.svg" alt="" className="h-6" />
+        <Image
+          src="/add_people_icon.svg"
+          width={24}
+          height={24}
+          alt=""
+        />
       </div>
       <div
         className={`absolute lg:relative  lg:block bottom-10 lg:bottom-auto left-0 lg:left-auto ${
@@ -180,7 +185,12 @@ const SideBar = () => {
         </div>
 
         <div className="px-4 hidden lg:flex gap-1 justify-self-end pt-32">
-          <Image className="w-4" src="/settings_icon.svg" alt="" />
+          <Image
+            width={24}
+            height={24}
+            src="/settings_icon.svg"
+            alt=""
+          />
           <p>Configuración</p>
         </div>
       </div>

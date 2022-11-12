@@ -224,7 +224,12 @@ const Evaluar = () => {
           </div>
         ) : (
           <div className="absolute left-1/2 top-72 -translate-x-1/2">
-            <Image src="/no_results.svg" alt="" className="w-80" />
+            <Image
+              width={320}
+              height={320}
+              src="/no_results.svg"
+              alt=""
+            />
           </div>
         )}
       </div>

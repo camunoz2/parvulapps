@@ -5,7 +5,9 @@ import {
 } from '@tanstack/react-query'
 import Logo from './Logo'
 import Dashed from './Dashed'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 const queryClient = new QueryClient()
 
@@ -15,6 +17,13 @@ const Layout = ({
   children: JSX.Element | JSX.Element[]
 }) => {
   const { status } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.replace('/dashboard')
+    }
+  }, [status])
 
   return (
     <div className="container mx-auto px-6 text-dark">
@@ -22,7 +31,10 @@ const Layout = ({
         <Logo small />
 
         {status === 'authenticated' && (
-          <div className="flex items-center gap-1">
+          <div
+            onClick={() => signOut()}
+            className="flex items-center gap-1"
+          >
             <p>Cerrar Sesión</p>
             <img
               src="/exit_icon.svg"

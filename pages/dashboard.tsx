@@ -3,7 +3,6 @@ import { useSession } from 'next-auth/react'
 
 import Layout from '../components/UI/Layout'
 import ModuleButton from '../components/UI/ModuleButton'
-import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 
 const DashboardPage = () => {
@@ -22,7 +21,7 @@ const DashboardPage = () => {
       </Head>
       <div className="absolute top-0 left-0 w-full bg-[#F6FAFF] -z-10" />
       <Layout>
-        <div className="flex flex-col gap-24 h-screen py-32">
+        <div className="flex flex-col gap-24 pt-32">
           <div>
             <p className="text-xl text-accent font-light">
               Bienvenid@
