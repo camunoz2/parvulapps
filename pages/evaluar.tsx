@@ -38,6 +38,9 @@ const Evaluar = () => {
   //For controlling opening and close of student list on mobile, pass to sidebar
   const [studentListMenu, setStudentListMenu] = useState(false)
 
+  // For instructions
+  const [info, setInfo] = useState(true)
+
   const { status } = useSession({
     required: true,
     onUnauthenticated() {
@@ -126,14 +129,41 @@ const Evaluar = () => {
         <div className="py-2">
           <Dashed />
         </div>
+        <div
+          className={` ${
+            info ? 'block' : 'hidden'
+          } border border-accent p-4 rounded-md`}
+        >
+          <p className="text-xl font-bold underline mb-2">
+            Instrucciones.
+          </p>
+          <p className="text-sm">
+            1. Filtra los objetivos y luego elige al alumno.
+          </p>
+          <p className="text-sm mb-2">
+            2. Después puedes cerrar el menu de alumnos para tener la
+            pantalla de evaluación a tu disposición 👌
+          </p>
+          <button
+            onClick={() => setInfo(false)}
+            className="bg-accent p-2 rounded-md shadow animate-bounce"
+          >
+            Entendido!
+          </button>
+        </div>
 
         {router.query.grade &&
         router.query.evalType &&
         router.query.categories &&
         router.query.core ? (
-          <div className="grid grid-cols-1 lg:grid-cols-3 mt-10 gap-4 h-full auto-rows-min items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-3 lg:mt-10 gap-4 h-full auto-rows-min items-start">
             <div className="col-span-1">
-              <h2 className="font-bold text-2xl">Alumnos</h2>
+              <h2 className="hidden lg:block font-bold text-2xl">
+                Alumnos
+              </h2>
+              <h2 className="lg:hidden font-bold text-2xl">
+                {student.name}
+              </h2>
             </div>
 
             {student.id >= 0 ? (
@@ -186,7 +216,7 @@ const Evaluar = () => {
               {objectives.isLoading && student.id >= 0 ? (
                 <p>Seleccion a un alumno de la lista 👌</p>
               ) : (
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
                   {objectives.data?.map((obj) => {
                     if (
                       obj.parentCoreId ===
