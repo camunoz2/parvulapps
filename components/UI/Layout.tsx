@@ -20,7 +20,7 @@ const Layout = ({
   const router = useRouter()
 
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (router.pathname === '/login' && status === 'authenticated') {
       router.replace('/dashboard')
     }
   }, [status])

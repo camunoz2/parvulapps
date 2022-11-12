@@ -35,6 +35,9 @@ const Evaluar = () => {
   const queryClient = useQueryClient()
   const router = useRouter()
 
+  //For controlling opening and close of student list on mobile, pass to sidebar
+  const [studentListMenu, setStudentListMenu] = useState(false)
+
   const { status } = useSession({
     required: true,
     onUnauthenticated() {
@@ -111,7 +114,10 @@ const Evaluar = () => {
 
   return (
     <div className="flex flex-col lg:flex-row bg-[#F6FAFF] h-full px-2 lg:px-0">
-      <SideBar />
+      <SideBar
+        studentListMenu={studentListMenu}
+        handleStudentList={setStudentListMenu}
+      />
       <div className="flex flex-col mx-auto lg:px-12">
         <div className="flex items-center justify-between gap-4 py-4">
           <Logo small />
@@ -125,7 +131,7 @@ const Evaluar = () => {
         router.query.evalType &&
         router.query.categories &&
         router.query.core ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 mt-10 gap-4 h-full auto-rows-min items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-3 mt-10 gap-4 h-full auto-rows-min items-start">
             <div className="col-span-1">
               <h2 className="font-bold text-2xl">Alumnos</h2>
             </div>
@@ -163,7 +169,13 @@ const Evaluar = () => {
               </div>
             )}
 
-            <div className="col-span-1">
+            <div
+              className={`${
+                studentListMenu
+                  ? 'col-span-2 block'
+                  : 'col-span-1 hidden lg:block'
+              }`}
+            >
               <StudentList
                 currentSelection={student.id}
                 setCurrentSelection={setStudent}
@@ -174,7 +186,7 @@ const Evaluar = () => {
               {objectives.isLoading && student.id >= 0 ? (
                 <p>Seleccion a un alumno de la lista 👌</p>
               ) : (
-                <div className="grid lg:grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {objectives.data?.map((obj) => {
                     if (
                       obj.parentCoreId ===

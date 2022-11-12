@@ -7,14 +7,14 @@ import { TERMS } from '../pages/evaluar'
 import { Curriculum, Filter } from '../types/app'
 
 interface Props {
-  filter: Filter | null
-  setFilter: React.Dispatch<React.SetStateAction<Filter | null>>
+  handleStudentList: React.Dispatch<React.SetStateAction<boolean>>
+  studentListMenu: boolean
 }
 
-const SideBar = () => {
+const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
   const router = useRouter()
   const { data: session, status } = useSession()
-  const [open, setOpen] = useState(false)
+  const [filter, setFilter] = useState(false)
 
   const filtersQuery = useQuery(
     ['filters'],
@@ -49,26 +49,35 @@ const SideBar = () => {
       router.query.categories &&
       router.query.core
     ) {
-      setOpen(false)
+      setFilter(false)
     }
   }, [router.query])
 
   return (
     <>
       <div
-        onClick={() => setOpen(!open)}
-        className={`fixed lg:hidden flex justify-center z-10 bottom-0 left-0 py-2 px-2 bg-accent text-white w-full`}
+        className={`fixed lg:hidden grid grid-cols-2 items-center z-10 bottom-0 left-0 pt-3 pb-2 px-2 bg-accent text-dark w-full divide-x divide-dark/30`}
       >
-        <Image
-          src="/add_people_icon.svg"
-          width={24}
-          height={24}
-          alt=""
-        />
+        <div
+          onClick={() => setFilter(!filter)}
+          className="flex flex-col gap-1 justify-center"
+        >
+          <Image src="/filter.svg" width={16} height={16} alt="" />
+          <p className="text-xs text-center">Filtrar</p>
+        </div>
+        <div
+          onClick={() => handleStudentList(!studentListMenu)}
+          className="flex flex-col gap-1 justify-center"
+        >
+          <Image src="/book_icon.svg" width={16} height={16} alt="" />
+          <p className="text-xs text-center">
+            {studentListMenu ? 'Cerrar Lista' : 'Elegir Alumno'}
+          </p>
+        </div>
       </div>
       <div
         className={`absolute lg:relative  lg:block bottom-10 lg:bottom-auto left-0 lg:left-auto ${
-          open ? 'block' : 'hidden'
+          filter ? 'block' : 'hidden'
         }  w-full flex-shrink-0 lg:w-[300px] lg:h-screen bg-gradient-to-br from-[#83bdbe] to-[#66c5c2] transition-all`}
       >
         <div>
