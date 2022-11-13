@@ -26,7 +26,7 @@ const Layout = ({
   }, [status])
 
   return (
-    <div className="container mx-auto px-6 text-dark">
+    <div className="container mx-auto px-6 text-dark h-screen">
       <div className="flex justify-between py-6">
         <Logo small />
 
