@@ -6,6 +6,7 @@ export default async function getObjectives(
   res: NextApiResponse
 ) {
   try {
+    console.log('get-objectives:', req.body)
     const obj = await prisma.objective.findMany({
       where: {
         studentId: req.body.studentId,

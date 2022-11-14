@@ -1,37 +1,78 @@
 import Layout from '../components/UI/Layout'
-import Image from 'next/image'
+import GradeCreator from '../components/GradeCreator'
+import { useQuery } from '@tanstack/react-query'
+import { Grade } from '@prisma/client'
+import { useEffect, useState } from 'react'
+import AddStudentComponent from '../components/AddStudentComponent'
+import EditableStudentList from '../components/EditableStudentList'
 
 const Configurar = () => {
+  const [gradeId, setGradeId] = useState<number | null>(null)
+
+  const gradeQuery = useQuery({
+    queryKey: ['grades', gradeId],
+    queryFn: getGrades,
+  })
+
+  function getGrades(): Promise<Grade[]> {
+    return fetch('/api/get-grades', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    }).then((res) => res.json())
+  }
+
   return (
     <Layout>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-3 gap-6 pt-6">
         <div>
-          <h2 className="text-2xl font-bold">Detalles</h2>
-          <p className="text-xl mb-4">
+          <h2 className="text-xl font-bold">Detalles</h2>
+          <p className="mb-4">
             En este sección podras crear los cursos asociados a tu
             institución educativa , las secciones que tienes y los
             alumnos que asisten a cada seccion
           </p>
-          <h2 className="text-2xl font-bold">Secciones</h2>
-          <p className="text-xl mb-4">
+          <h2 className="text-xl font-bold">Secciones</h2>
+          <p className="mb-4">
             Configura las secciones por nivel que quieres agregar
           </p>
-          {/* Seccion 1 */}
-          <div className="flex flex-col bg-gradient-to-r from-[#89BABB33] to-[#0EADA759] p-2 rounded">
-            <div className="flex justify-between">
-              <h3 className="text-base italic">Sala cuna</h3>
-              <div className="bg-accent p-1 flex gap-1 items-center">
-                <p className="text-xs">editar</p>
-                <Image src="/edit_icon.svg" width={18} height={18} />
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <div className="rounded-md border border-dark p-3">
-                <p className="mb-1 text-center">A</p>
-                <p className="text-xs text-center">32 alumnos</p>
-              </div>
-            </div>
+          <div className="grid gap-2">
+            <GradeCreator grade="Sala Cuna" />
+            <GradeCreator grade="NT1" />
+            <GradeCreator grade="NT2" />
           </div>
+        </div>
+
+        <div className="col-span-2">
+          <h2 className="text-xl font-bold">Agregar alumnos</h2>
+
+          <div>
+            <label className="font-light text-sm pl-1 italic">
+              Curso
+            </label>
+            <div className="flex gap-1">
+              {gradeQuery.isLoading ? (
+                <p>loading...</p>
+              ) : (
+                <select
+                  name="grade"
+                  className="bg-gradient-to-r from-[#89BABB33] to-[#0EADA759] p-2 rounded-md"
+                  onChange={(event) =>
+                    setGradeId(parseInt(event.target.value))
+                  }
+                >
+                  {!gradeId && <option>Elige una sección</option>}
+                  {gradeQuery.data?.map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.classroom} - {g.section}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+            <AddStudentComponent gradeId={gradeId} />
+          </div>
+
+          <EditableStudentList gradeId={gradeId} />
         </div>
       </div>
     </Layout>

@@ -3,7 +3,7 @@ interface Props {
 }
 
 const TableCell = ({ content }: Props) => {
-  return <td className="border border-gray-800">{content}</td>
+  return <td>{content}</td>
 }
 
 export default TableCell

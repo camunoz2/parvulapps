@@ -57,8 +57,8 @@ const Evaluar = () => {
     id: 0,
   })
 
-  const scoreMutation = useMutation(
-    ({ value, id }: { value: number; id: number }) => {
+  const scoreMutation = useMutation({
+    mutationFn: ({ value, id }: { value: number; id: number }) => {
       return fetch('/api/set-score', {
         method: 'POST',
         headers: {
@@ -71,10 +71,8 @@ const Evaluar = () => {
         }),
       })
     },
-    {
-      onSuccess: () => queryClient.invalidateQueries(['objectives']),
-    }
-  )
+    onSuccess: () => queryClient.invalidateQueries(['objectives']),
+  })
 
   const objectives = useQuery(
     ['objectives', student, router.query],
