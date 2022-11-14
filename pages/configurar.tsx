@@ -2,7 +2,7 @@ import Layout from '../components/UI/Layout'
 import GradeCreator from '../components/GradeCreator'
 import { useQuery } from '@tanstack/react-query'
 import { Grade } from '@prisma/client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import AddStudentComponent from '../components/AddStudentComponent'
 import EditableStudentList from '../components/EditableStudentList'
 

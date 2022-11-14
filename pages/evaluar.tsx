@@ -29,6 +29,13 @@ export const TERMS = [
   },
 ]
 
+const COLORS = [
+  'bg-white',
+  'bg-yellow-200',
+  'bg-purple-200',
+  'bg-green-200',
+]
+
 const PIXEL_LENGTH = 50
 
 const Evaluar = () => {
@@ -121,7 +128,7 @@ const Evaluar = () => {
       />
       <div className="flex flex-col mx-auto lg:px-12">
         <div className="flex items-center justify-between gap-4 py-4">
-          <Logo small />
+          <Logo linked small />
           <Menu />
         </div>
         <div className="py-2">
@@ -215,10 +222,28 @@ const Evaluar = () => {
             <div className="self-start overflow-auto h-[500px] lg:h-[700px] scroll-smooth lg:col-span-2 col-span-1 text-xs lg:text-base">
               {objectives.isLoading && student.id >= 0 ? (
                 <p className="text-lg">
-                  Seleccion a un alumno de la lista 👌
+                  Para ver los objetivos debes seleccionar un alumno
+                  de la lista 🙌
                 </p>
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                  <div className="lg:col-span-2 flex gap-1 sticky top-0 bg-white p-2">
+                    <p
+                      className={`${COLORS[1]} p-2 rounded-md text-sm`}
+                    >
+                      Nivel 1 / Sala Cuna
+                    </p>
+                    <p
+                      className={`${COLORS[2]} p-2 rounded-md text-sm`}
+                    >
+                      Nivel 2 / PreKinder
+                    </p>
+                    <p
+                      className={`${COLORS[3]} p-2 rounded-md text-sm`}
+                    >
+                      Nivel 3 / Kinder
+                    </p>
+                  </div>
                   {objectives.data?.map((obj) => {
                     if (
                       obj.parentCoreId ===
@@ -228,7 +253,9 @@ const Evaluar = () => {
                       return (
                         <div
                           key={obj.id}
-                          className="border border-accent rounded-md py-6 px-4 flex flex-col lg:flex-row gap-2 lg:gap-4 items-center justify-between bg-white shadow-md"
+                          className={`border border-accent rounded-md py-6 px-4 flex flex-col lg:flex-row gap-2 lg:gap-4 items-center justify-between ${
+                            COLORS[obj.level]
+                          } shadow-md`}
                         >
                           <p className="text-lg">{obj.description}</p>
                           <select

@@ -28,20 +28,23 @@ const Layout = ({
   return (
     <div className="container mx-auto px-6 text-dark h-screen">
       <div className="flex justify-between py-6">
-        <Logo small />
+        <Logo linked small />
 
         {status === 'authenticated' && (
-          <div
-            onClick={() => signOut()}
-            className="flex items-center gap-1"
-          >
-            <p>Cerrar Sesión</p>
-            <img
-              src="/exit_icon.svg"
-              alt="exit icon"
-              className="w-4"
-            />
-          </div>
+          <>
+            {router.asPath === '/dashboard' ? '' : <Menu />}
+            <div
+              onClick={() => signOut()}
+              className="flex items-center gap-1"
+            >
+              <p>Cerrar Sesión</p>
+              <img
+                src="/exit_icon.svg"
+                alt="exit icon"
+                className="w-4"
+              />
+            </div>
+          </>
         )}
       </div>
 
