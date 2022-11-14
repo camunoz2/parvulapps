@@ -10,7 +10,7 @@ const Configurar = () => {
   const [gradeId, setGradeId] = useState<number | null>(null)
 
   const gradeQuery = useQuery({
-    queryKey: ['grades', gradeId],
+    queryKey: ['grades'],
     queryFn: getGrades,
   })
 
@@ -60,7 +60,7 @@ const Configurar = () => {
                     setGradeId(parseInt(event.target.value))
                   }
                 >
-                  {!gradeId && <option>Elige una sección</option>}
+                  {!gradeId && <option>Curso</option>}
                   {gradeQuery.data?.map((g) => (
                     <option key={g.id} value={g.id}>
                       {g.classroom} - {g.section}
@@ -69,7 +69,7 @@ const Configurar = () => {
                 </select>
               )}
             </div>
-            <AddStudentComponent gradeId={gradeId} />
+            {gradeId && <AddStudentComponent gradeId={gradeId} />}
           </div>
 
           <EditableStudentList gradeId={gradeId} />
