@@ -41,7 +41,8 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
     })
   }
 
-  const selectStyles = 'bg-[#2D646533] text-xs rounded-md py-2 px-2'
+  const selectStyles =
+    'text-xs rounded-md py-3 px-2 bg-dark/30 text-white'
 
   useEffect(() => {
     if (
@@ -56,9 +57,8 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
 
   return (
     <>
-      <div
-        className={`fixed lg:hidden grid grid-cols-2 items-center z-10 bottom-0 left-0 pt-3 pb-2 px-2 bg-accent text-dark w-full divide-x divide-dark/30`}
-      >
+      {/* Mobile View */}
+      <div className="fixed lg:hidden grid grid-cols-2 items-center z-10 bottom-0 left-0 pt-3 pb-2 px-2 bg-accent text-dark w-full divide-x">
         <div
           onClick={() => setFilter(!filter)}
           className="flex flex-col gap-1 justify-center"
@@ -80,21 +80,22 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
           </p>
         </div>
       </div>
+
       <div
         className={`absolute lg:relative  lg:block bottom-10 lg:bottom-auto left-0 lg:left-auto ${
           filter ? 'block' : 'hidden'
-        }  w-full flex-shrink-0 lg:w-[300px] lg:h-screen bg-gradient-to-br from-[#83bdbe] to-[#66c5c2] transition-all`}
+        }  w-full flex-shrink-0 lg:w-[300px] lg:h-screen bg-accent transition-all`}
       >
         <div>
-          <div className="flex items-center gap-2 bg-gradient-to-bl from-[#2D646533] to-[#0EADA712] bg-blend-lighten px-4  mb-2 lg:mb-16 py-1 lg:py-6">
+          <div className="flex items-center gap-2 bg-dark/30 text-white px-4  mb-2 lg:mb-16 py-1 lg:py-6">
             <div className="w-12 h-12 rounded-full bg-white border" />
-            <div className="text-dark hidden lg:block">
+            <div className=" hidden lg:block">
               <h3 className="font-bold lg:text-xl">
                 {session?.user?.name}
               </h3>
               <p
                 onClick={() => signOut()}
-                className="text-xs font-light hover:text-blue-800 hover:cursor-pointer"
+                className="text-xs font-light hover:text-accent hover:cursor-pointer"
               >
                 Cerrar Sesión
               </p>
@@ -103,9 +104,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
           <div className="px-4">
             <form className="flex flex-wrap lg:flex-col gap-4 mb-6">
               <div className="flex flex-col">
-                <label className="font-light text-sm pl-1">
-                  Curso
-                </label>
+                <label className="font-light pl-1">Curso</label>
                 <div className="flex gap-1">
                   {filtersQuery.isLoading ? (
                     <p>loading...</p>
@@ -130,7 +129,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
                 </div>
               </div>
               <div className="flex flex-col">
-                <label className="font-light text-sm pl-1">
+                <label className="font-light pl-1">
                   Tipo de evaluación
                 </label>
                 <div className="flex gap-1">
@@ -154,9 +153,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
                 </div>
               </div>
               <div className="flex flex-col">
-                <label className="font-light text-sm pl-1">
-                  Ámbito
-                </label>
+                <label className="font-light pl-1">Ámbito</label>
                 <div className="flex gap-1">
                   <select
                     title="category selector"
@@ -176,9 +173,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
                 </div>
               </div>
               <div className="flex flex-col">
-                <label className="font-light text-sm pl-1">
-                  Núcleo
-                </label>
+                <label className="font-light pl-1">Núcleo</label>
                 <div className="flex gap-1">
                   <select
                     title="core selection"
@@ -208,7 +203,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
         </div>
 
         <Link href="/configurar">
-          <div className="px-4 hidden lg:flex gap-1 justify-self-end hover:bg-white hover:shadow rounded-md py-4 hover:cursor-pointer">
+          <div className="px-4 hidden lg:flex gap-1 justify-self-end rounded-md py-4 hover:cursor-pointer">
             <Image
               width={24}
               height={24}

@@ -8,7 +8,7 @@ const Menu = () => {
   if (status === 'authenticated') {
     return (
       <Link href="/dashboard">
-        <div className="z-30 px-2 py-2 rounded-md shadow bg-gradient-to-t from-accent to-blue-200 hover:cursor-pointer hover:shadow-xl">
+        <div className="z-10 py-3 px-4 rounded-md bg-accent hover:cursor-pointer hover:shadow-md">
           <p>Modulos</p>
         </div>
       </Link>

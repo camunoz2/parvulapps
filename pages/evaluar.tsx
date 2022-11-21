@@ -45,9 +45,6 @@ const Evaluar = () => {
   //For controlling opening and close of student list on mobile, pass to sidebar
   const [studentListMenu, setStudentListMenu] = useState(false)
 
-  // For instructions on screen
-  const [info, setInfo] = useState(true)
-
   const { status } = useSession({
     required: true,
     onUnauthenticated() {
@@ -133,28 +130,6 @@ const Evaluar = () => {
         </div>
         <div className="py-2">
           <Dashed />
-        </div>
-        <div
-          className={` ${
-            info ? 'block' : 'hidden'
-          } border border-accent p-4 rounded-md`}
-        >
-          <p className="text-xl font-bold underline mb-2">
-            Instrucciones.
-          </p>
-          <p className="text-sm">
-            1. Filtra los objetivos y luego elige al alumno.
-          </p>
-          <p className="text-sm mb-2">
-            2. Después puedes cerrar el menu de alumnos para tener la
-            pantalla de evaluación a tu disposición 👌
-          </p>
-          <button
-            onClick={() => setInfo(false)}
-            className="bg-accent p-2 rounded-md shadow animate-bounce"
-          >
-            Entendido!
-          </button>
         </div>
 
         {router.query.grade &&
@@ -260,7 +235,7 @@ const Evaluar = () => {
                           <p className="text-lg">{obj.description}</p>
                           <select
                             title="score"
-                            className="bg-white p-2 border border-accent rounded-md"
+                            className="bg-white p-2 border border-accent rounded-md text-xl hover:cursor-pointer"
                             onChange={(event) => {
                               scoreMutation.mutate({
                                 value: parseInt(event.target.value),

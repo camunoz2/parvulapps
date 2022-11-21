@@ -6,18 +6,14 @@ import Layout from '../components/UI/Layout'
 import Logo from '../components/UI/Logo'
 
 const LoginPage = () => {
+  const background = ''
+
   return (
     <>
       <Head>
         <title>Parvulapps | Login</title>
       </Head>
-      <div
-        style={{
-          background:
-            'linear-gradient(119deg, #6FBFC166 0%, #EFA2E05E 48%, #4A38CC6E 100%)',
-        }}
-        className="w-screen h-screen top-0 left-0 absolute -z-10"
-      />
+      <div className="w-screen h-screen top-0 left-0 absolute -z-10 bg-custom-gradient" />
       <Layout>
         <div className="flex flex-col lg:flex-row items-center justify-around gap-6 pt-0 lg:pt-10">
           <div className="hidden lg:flex flex-col gap-6 max-w-[400px]">
@@ -52,6 +48,7 @@ const LoginPage = () => {
                   Email
                 </label>
                 <input
+                  title="email"
                   type="email"
                   required
                   className="bg-lightblue py-3 rounded-md px-3 focus:outline-accent"
@@ -62,6 +59,7 @@ const LoginPage = () => {
                   Password
                 </label>
                 <input
+                  title="password"
                   className="bg-lightblue py-3 rounded-md px-3 focus:outline-accent"
                   type="password"
                   required
@@ -70,7 +68,7 @@ const LoginPage = () => {
 
               <button
                 onClick={() => {}}
-                className="bg-accent py-3 rounded-md mt-3 flex justify-center items-center gap-4"
+                className="bg-accent py-3 rounded-md mt-3 flex justify-center items-center gap-4 hover:shadow-md"
               >
                 INICIAR SESIÓN
               </button>
@@ -87,7 +85,7 @@ const LoginPage = () => {
                   callbackUrl: '/dashboard',
                 })
               }
-              className="border border-accent font-bold py-3 rounded-md mt-3 flex justify-center items-center gap-4"
+              className="border border-accent font-bold py-3 rounded-md mt-3 flex justify-center items-center gap-4 hover:cursor-pointer hover:shadow-md"
             >
               <Image
                 width="24"

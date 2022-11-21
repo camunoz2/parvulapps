@@ -42,8 +42,8 @@ const StudentList = ({
                 id: student.id,
               })
             }
-            className={`p-2 border border-accent rounded-md text-sm lg:text-base ${
-              currentSelection === student.id ? 'bg-green-400' : ''
+            className={`p-2 border border-accent rounded-md text-sm lg:text-base hover:cursor-pointer ${
+              currentSelection === student.id ? 'bg-accent' : ''
             }`}
           >
             {student.name} {student.lastName}
