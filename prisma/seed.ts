@@ -25,6 +25,13 @@ async function main() {
   console.log('deleted teachers: ', dTeacher)
 
   // Create Grade
+  const sala = await prisma.grade.create({
+    data: {
+      classroom: 'Sala Cuna',
+      section: 'A',
+    },
+  })
+  console.log('create grade: ', sala)
   const nt1A = await prisma.grade.create({
     data: {
       classroom: 'NT1',
@@ -41,7 +48,22 @@ async function main() {
   console.log('create grade: ', nt2A)
 
   // Create students
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 1; i++) {
+    const student = await prisma.student.create({
+      data: {
+        name: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        rut: faker.random.numeric(9),
+        Grade: {
+          connect: {
+            id: sala.id,
+          },
+        },
+      },
+    })
+    console.log('create student: ', student)
+  }
+  for (let i = 0; i < 1; i++) {
     const student = await prisma.student.create({
       data: {
         name: faker.name.firstName(),
@@ -56,7 +78,7 @@ async function main() {
     })
     console.log('create student: ', student)
   }
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 1; i++) {
     const student = await prisma.student.create({
       data: {
         name: faker.name.firstName(),

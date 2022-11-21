@@ -14,7 +14,7 @@ model Student {
   name       String
   lastName   String
   rut        String
-  Grade      Grade       @relation(fields: [gradeId], references: [id])
+  Grade      Grade       @relation(fields: [gradeId], references: [id], onDelete: Cascade)
   gradeId    Int
   Objectives Objective[]
 

@@ -1,17 +1,27 @@
+import { useState } from 'react'
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
+import { Grade } from '@prisma/client'
 import Layout from '../components/UI/Layout'
 import GradeCreator from '../components/GradeCreator'
-import { useQuery } from '@tanstack/react-query'
-import { Grade } from '@prisma/client'
-import { useState } from 'react'
 import AddStudentComponent from '../components/AddStudentComponent'
 import EditableStudentList from '../components/EditableStudentList'
 
 const Configurar = () => {
+  const queryClient = useQueryClient()
   const [gradeId, setGradeId] = useState<number | null>(null)
+  const [gradeName, setGradeName] = useState('')
+  const [classrooms, setClassrooms] = useState<Array<string> | null>(
+    null
+  )
 
   const gradeQuery = useQuery({
     queryKey: ['grades'],
     queryFn: getGrades,
+    onSuccess: getClassrooms,
   })
 
   function getGrades(): Promise<Grade[]> {
@@ -19,6 +29,26 @@ const Configurar = () => {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     }).then((res) => res.json())
+  }
+
+  const createGrade = useMutation({
+    mutationFn: () => {
+      return fetch('/api/add-grade', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gradeName: gradeName,
+        }),
+      })
+    },
+    onSuccess: () => queryClient.invalidateQueries(['grades']),
+  })
+
+  function getClassrooms(arr: Grade[]) {
+    const result = new Set<string>()
+    arr.map((grade) => result.add(grade.classroom))
+    const newArr = Array.from(result)
+    setClassrooms(newArr)
   }
 
   return (
@@ -35,10 +65,36 @@ const Configurar = () => {
           <p className="mb-4">
             Configura las secciones por nivel que quieres agregar
           </p>
-          <div className="grid gap-2">
-            <GradeCreator grade="Sala Cuna" />
-            <GradeCreator grade="NT1" />
-            <GradeCreator grade="NT2" />
+          <div className="border border-slate-500 rounded-md p-2 flex gap-2 flex-wrap">
+            {gradeQuery.isLoading ? (
+              <p>loading...</p>
+            ) : (
+              <select
+                onChange={(event) => setGradeName(event.target.value)}
+                title="grade creator"
+              >
+                {classrooms &&
+                  classrooms?.length > 0 &&
+                  classrooms.map((grade, i) => (
+                    <option key={i}>{grade}</option>
+                  ))}
+              </select>
+            )}
+            <button
+              onClick={() => createGrade.mutate()}
+              className="px-4 py-2 bg-cyan-500 rounded-md"
+            >
+              Agregar curso
+            </button>
+          </div>
+          <div className="flex gap-2 py-3 flex-wrap">
+            {gradeQuery.isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              gradeQuery.data?.map((grade) => {
+                return <GradeCreator key={grade.id} grade={grade} />
+              })
+            )}
           </div>
         </div>
 
