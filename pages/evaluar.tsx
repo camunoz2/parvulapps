@@ -259,6 +259,7 @@ const Evaluar = () => {
                         >
                           <p className="text-lg">{obj.description}</p>
                           <select
+                            title="score"
                             className="bg-white p-2 border border-accent rounded-md"
                             onChange={(event) => {
                               scoreMutation.mutate({

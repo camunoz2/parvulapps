@@ -35,7 +35,7 @@ const Layout = ({
             {router.asPath === '/dashboard' ? '' : <Menu />}
             <div
               onClick={() => signOut()}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 hover:cursor-pointer"
             >
               <p>Cerrar Sesión</p>
               <img

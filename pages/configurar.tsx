@@ -54,6 +54,7 @@ const Configurar = () => {
                 <p>loading...</p>
               ) : (
                 <select
+                  title="grade selector"
                   name="grade"
                   className="bg-gradient-to-r from-[#89BABB33] to-[#0EADA759] p-2 rounded-md"
                   onChange={(event) =>

@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { TERMS } from '../pages/evaluar'
 import { Curriculum, Filter } from '../types/app'
+import Link from 'next/link'
 
 interface Props {
   handleStudentList: React.Dispatch<React.SetStateAction<boolean>>
@@ -91,7 +92,12 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
               <h3 className="font-bold lg:text-xl">
                 {session?.user?.name}
               </h3>
-              <p className="text-xs font-light">Cerrar Sesión</p>
+              <p
+                onClick={() => signOut()}
+                className="text-xs font-light hover:text-blue-800 hover:cursor-pointer"
+              >
+                Cerrar Sesión
+              </p>
             </div>
           </div>
           <div className="px-4">
@@ -105,6 +111,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
                     <p>loading...</p>
                   ) : (
                     <select
+                      title="grade selector"
                       name="grade"
                       onChange={handleSelect}
                       className={selectStyles}
@@ -128,6 +135,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
                 </label>
                 <div className="flex gap-1">
                   <select
+                    title="evaluation selector"
                     onChange={handleSelect}
                     name="evalType"
                     className={selectStyles}
@@ -151,6 +159,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
                 </label>
                 <div className="flex gap-1">
                   <select
+                    title="category selector"
                     onChange={handleSelect}
                     name="categories"
                     className={selectStyles}
@@ -172,6 +181,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
                 </label>
                 <div className="flex gap-1">
                   <select
+                    title="core selection"
                     onChange={handleSelect}
                     name="core"
                     className={selectStyles}
@@ -197,15 +207,17 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
           </div>
         </div>
 
-        <div className="px-4 hidden lg:flex gap-1 justify-self-end pt-32">
-          <Image
-            width={24}
-            height={24}
-            src="/settings_icon.svg"
-            alt=""
-          />
-          <p>Configuración</p>
-        </div>
+        <Link href="/configurar">
+          <div className="px-4 hidden lg:flex gap-1 justify-self-end hover:bg-white hover:shadow rounded-md py-4 hover:cursor-pointer">
+            <Image
+              width={24}
+              height={24}
+              src="/settings_icon.svg"
+              alt=""
+            />
+            <p>Configuración</p>
+          </div>
+        </Link>
       </div>
     </>
   )
