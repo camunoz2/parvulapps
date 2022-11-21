@@ -42,7 +42,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
   }
 
   const selectStyles =
-    'text-xs rounded-md py-3 px-2 bg-dark/30 text-white'
+    'text-xs rounded-md py-3 px-2 bg-white text-dark'
 
   useEffect(() => {
     if (

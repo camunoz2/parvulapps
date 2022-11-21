@@ -118,7 +118,7 @@ const Evaluar = () => {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row bg-[#F6FAFF] h-full px-2 lg:px-0">
+    <div className="flex flex-col lg:flex-row h-full px-2 lg:px-0">
       <SideBar
         studentListMenu={studentListMenu}
         handleStudentList={setStudentListMenu}
@@ -202,19 +202,19 @@ const Evaluar = () => {
                 </p>
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                  <div className="lg:col-span-2 flex gap-1 sticky top-0 bg-white p-2">
+                  <div className="lg:col-span-2 flex gap-1 sticky top-0 p-2">
                     <p
-                      className={`${COLORS[1]} p-2 rounded-md text-sm`}
+                      className={`${COLORS[1]} p-2 rounded-full text-sm border border-accent`}
                     >
                       Nivel 1 / Sala Cuna
                     </p>
                     <p
-                      className={`${COLORS[2]} p-2 rounded-md text-sm`}
+                      className={`${COLORS[2]} p-2 rounded-full text-sm border border-accent`}
                     >
                       Nivel 2 / PreKinder
                     </p>
                     <p
-                      className={`${COLORS[3]} p-2 rounded-md text-sm`}
+                      className={`${COLORS[3]} p-2 rounded-full text-sm border border-accent`}
                     >
                       Nivel 3 / Kinder
                     </p>

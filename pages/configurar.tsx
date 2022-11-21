@@ -62,15 +62,14 @@ const Configurar = () => {
             alumnos que asisten a cada seccion
           </p>
           <h2 className="text-xl font-bold">Secciones</h2>
-          <p className="mb-4">
-            Configura las secciones por nivel que quieres agregar
-          </p>
-          <div className="border border-slate-500 rounded-md p-2 flex gap-2 flex-wrap">
+          <p className="mb-4">¿Qué curso quieres agregar?</p>
+          <div className="flex gap-2">
             {gradeQuery.isLoading ? (
               <p>loading...</p>
             ) : (
               <select
                 onChange={(event) => setGradeName(event.target.value)}
+                className="rounded-md py-3 px-2 bg-white text-dark border border-accent"
                 title="grade creator"
               >
                 {classrooms &&
@@ -82,7 +81,7 @@ const Configurar = () => {
             )}
             <button
               onClick={() => createGrade.mutate()}
-              className="px-4 py-2 bg-cyan-500 rounded-md"
+              className="px-4 py-3 bg-accent rounded-md hover:cursor-pointer hover:shadow-md"
             >
               Agregar curso
             </button>
@@ -102,9 +101,6 @@ const Configurar = () => {
           <h2 className="text-xl font-bold">Agregar alumnos</h2>
 
           <div>
-            <label className="font-light text-sm pl-1 italic">
-              Curso
-            </label>
             <div className="flex gap-1">
               {gradeQuery.isLoading ? (
                 <p>loading...</p>
@@ -112,7 +108,7 @@ const Configurar = () => {
                 <select
                   title="grade selector"
                   name="grade"
-                  className="bg-gradient-to-r from-[#89BABB33] to-[#0EADA759] p-2 rounded-md"
+                  className="bg-white border border-accent py-3 rounded-md"
                   onChange={(event) =>
                     setGradeId(parseInt(event.target.value))
                   }

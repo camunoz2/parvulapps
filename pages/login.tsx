@@ -13,7 +13,7 @@ const LoginPage = () => {
       <Head>
         <title>Parvulapps | Login</title>
       </Head>
-      <div className="w-screen h-screen top-0 left-0 absolute -z-10 bg-custom-gradient" />
+      <div className="w-screen h-screen top-0 left-0 absolute -z-10" />
       <Layout>
         <div className="flex flex-col lg:flex-row items-center justify-around gap-6 pt-0 lg:pt-10">
           <div className="hidden lg:flex flex-col gap-6 max-w-[400px]">

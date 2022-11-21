@@ -43,10 +43,11 @@ const AddStudentComponent = ({
           Nombre
         </label>
         <input
-          onChange={(event) =>
+          title="first name"
+          onChange={(event) => {
             setStudent({ ...student, firstName: event.target.value })
-          }
-          className="bg-gradient-to-r from-[#89BABB33] to-[#0EADA759] p-2 h-8 rounded-md"
+          }}
+          className="bg-white border border-accent py-3 rounded-md px-2"
           name="name"
           value={student.firstName}
         />
@@ -56,10 +57,11 @@ const AddStudentComponent = ({
           Apellido
         </label>
         <input
+          title="last name"
           onChange={(event) =>
             setStudent({ ...student, lastName: event.target.value })
           }
-          className="bg-gradient-to-r from-[#89BABB33] to-[#0EADA759] p-2 h-8 rounded-md"
+          className="bg-white border border-accent py-3 rounded-md px-2"
           name="lastName"
           value={student.lastName}
         />
@@ -67,13 +69,14 @@ const AddStudentComponent = ({
       <div className="flex flex-col">
         <label className="font-light text-sm pl-1 italic">RUT</label>
         <input
+          title="rut"
           onChange={(event) =>
             setStudent({
               ...student,
               rut: event.target.value,
             })
           }
-          className="bg-gradient-to-r from-[#89BABB33] to-[#0EADA759] p-2 h-8 rounded-md"
+          className="bg-white border border-accent py-3 rounded-md px-2"
           name="rut"
           value={student.rut}
         />
@@ -82,7 +85,7 @@ const AddStudentComponent = ({
         onClick={() => {
           addStudentMutation.mutate()
         }}
-        className="bg-gradient-to-r from-[#89BABB33] to-[#0EADA759] px-2 h-8 rounded-md text-center"
+        className="border border-accent py-3 rounded-md px-2 bg-accent hover:cursor-pointer hover:shadow-md"
       >
         Agregar
       </button>
