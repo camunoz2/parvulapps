@@ -27,20 +27,25 @@ export default async function addSection(
     })
 
     if (session.user?.email) {
-      const teacher = await prisma.user.findUnique({
-        where: {
-          email: session.user.email,
-        },
-      })
-
       if (sections < sectionsLetter.length) {
-        await prisma.grade.create({
-          data: {
-            classroom: req.body.gradeName,
-            section: sectionsLetter[sections],
-            teacherId: teacher!.id,
+        const teacher = await prisma.user.findUnique({
+          where: {
+            email: session.user.email,
           },
         })
+        if (teacher) {
+          await prisma.grade.create({
+            data: {
+              classroom: req.body.gradeName,
+              section: sectionsLetter[sections],
+              teacherId: teacher?.id,
+            },
+          })
+        } else
+          res.status(400).send({
+            message:
+              'El usuario no se encuentra en nuestra base de datos',
+          })
       }
     }
     res.status(200).end()
