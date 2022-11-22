@@ -8,6 +8,7 @@ export default async function addSection(
   res: NextApiResponse
 ) {
   try {
+    // Check user login
     const session = await unstable_getServerSession(
       req,
       res,
@@ -18,37 +19,39 @@ export default async function addSection(
         .status(400)
         .send({ message: 'El usuario no tiene un email valido' })
 
+    // Check sections quantity
     const sectionsLetter = ['A', 'B', 'C', 'D', 'E']
-
     const sections = await prisma.grade.count({
       where: {
         classroom: req.body.gradeName,
       },
     })
 
-    if (session.user?.email) {
-      if (sections < sectionsLetter.length) {
-        const teacher = await prisma.user.findUnique({
-          where: {
-            email: session.user.email,
-          },
-        })
-        if (teacher) {
-          await prisma.grade.create({
-            data: {
-              classroom: req.body.gradeName,
-              section: sectionsLetter[sections],
-              teacherId: teacher?.id,
-            },
-          })
-          res.status(200).end()
-        } else
-          res.status(400).send({
-            message:
-              'El usuario no se encuentra en nuestra base de datos',
-          })
-      }
-    }
+    if (sections > sectionsLetter.length)
+      return res.status(400).send({
+        message: 'Alcanzaste el maximo de secciones creadas',
+      })
+
+    // Check teacher email
+    const teacher = await prisma.user.findUnique({
+      where: {
+        email: session.user.email,
+      },
+    })
+    if (!teacher)
+      return res
+        .status(400)
+        .send({ message: 'Usuario no encontrado' })
+
+    // Create grade
+    await prisma.grade.create({
+      data: {
+        classroom: req.body.gradeName,
+        section: sectionsLetter[sections],
+        teacherId: teacher?.id,
+      },
+    })
+    res.status(200).end()
   } catch (error) {
     console.log(error)
   }
