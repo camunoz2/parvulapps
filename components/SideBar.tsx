@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { TERMS } from '../pages/evaluar'
-import { Curriculum, Filter } from '../types/app'
+import { Curriculum } from '../types/app'
 import Link from 'next/link'
 
 interface Props {
@@ -16,6 +16,17 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
   const router = useRouter()
   const { data: session, status } = useSession()
   const [filter, setFilter] = useState(false)
+
+  useEffect(() => {
+    if (
+      router.query.grade &&
+      router.query.evalType &&
+      router.query.categories &&
+      router.query.core
+    ) {
+      setFilter(false)
+    }
+  }, [router.query])
 
   const filtersQuery = useQuery(
     ['filters'],
@@ -43,17 +54,6 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
 
   const selectStyles =
     'text-xs rounded-md py-3 px-2 bg-white text-dark'
-
-  useEffect(() => {
-    if (
-      router.query.grade &&
-      router.query.evalType &&
-      router.query.categories &&
-      router.query.core
-    ) {
-      setFilter(false)
-    }
-  }, [router.query])
 
   return (
     <>

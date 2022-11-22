@@ -39,19 +39,23 @@ const COLORS = [
 const PIXEL_LENGTH = 50
 
 const Evaluar = () => {
-  const queryClient = useQueryClient()
-  const router = useRouter()
-
-  //For controlling opening and close of student list on mobile, pass to sidebar
-  const [studentListMenu, setStudentListMenu] = useState(false)
-  const [showError, setShowError] = useState(false)
-
   const { status } = useSession({
     required: true,
     onUnauthenticated() {
       router.replace('/login')
     },
   })
+
+  useEffect(() => {
+    router.replace('/evaluar')
+  }, [])
+
+  const queryClient = useQueryClient()
+  const router = useRouter()
+
+  //For controlling opening and close of student list on mobile, pass to sidebar
+  const [studentListMenu, setStudentListMenu] = useState(false)
+  const [showError, setShowError] = useState(false)
 
   // TODO: Fix sidebar filter evaluation
   const [student, setStudent] = useState({

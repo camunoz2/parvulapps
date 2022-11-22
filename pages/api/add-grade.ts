@@ -41,6 +41,7 @@ export default async function addSection(
               teacherId: teacher?.id,
             },
           })
+          res.status(200).end()
         } else
           res.status(400).send({
             message:
@@ -48,7 +49,6 @@ export default async function addSection(
           })
       }
     }
-    res.status(200).end()
   } catch (error) {
     console.log(error)
   }
