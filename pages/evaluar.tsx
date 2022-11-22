@@ -1,4 +1,4 @@
-import { Objective } from '@prisma/client'
+import { Grade, Objective } from '@prisma/client'
 import {
   useMutation,
   useQuery,
@@ -44,6 +44,7 @@ const Evaluar = () => {
 
   //For controlling opening and close of student list on mobile, pass to sidebar
   const [studentListMenu, setStudentListMenu] = useState(false)
+  const [showError, setShowError] = useState(false)
 
   const { status } = useSession({
     required: true,
@@ -59,6 +60,20 @@ const Evaluar = () => {
   const [student, setStudent] = useState({
     name: '',
     id: 0,
+  })
+
+  const getGrades = useQuery({
+    queryKey: ['grades'],
+    queryFn: (): Promise<Grade[]> => {
+      return fetch('/api/get-grades', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }).then((res) => res.json())
+    },
+    onSuccess: (res) => {
+      if (res.length <= 0) setShowError(true)
+      else return
+    },
   })
 
   const scoreMutation = useMutation({
@@ -115,6 +130,36 @@ const Evaluar = () => {
       return { studentScore, currentPixels }
     }
     return { studentScore: 0, currentPixels: 0 }
+  }
+
+  if (showError) {
+    return (
+      <div className="absolute top-0 left-0 w-full h-full bg-slate-500/90 backdrop-blur flex items-center justify-center z-30">
+        <div className="p-6 rounded-md border border-accent flex flex-col bg-white max-w-lg">
+          <p className="font-bold text-xl mb-10">
+            No se encontraron cursos:
+          </p>
+          <p className="mb-6">
+            Necesitas crear cursos con estudiantes para poder evaluar
+            a los alumnos.
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => router.push('/configurar')}
+              className="bg-slate-700 text-white py-2 px-4 rounded-md"
+            >
+              Ok! Ir a crear cursos 😊.
+            </button>
+            <button
+              onClick={() => setShowError(false)}
+              className="bg-red-500 text-white py-2 px-4 rounded-md"
+            >
+              Ok! Quedarse igualmente 😒.
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

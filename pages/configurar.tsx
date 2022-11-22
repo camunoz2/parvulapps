@@ -9,14 +9,25 @@ import Layout from '../components/UI/Layout'
 import GradeCreator from '../components/GradeCreator'
 import AddStudentComponent from '../components/AddStudentComponent'
 import EditableStudentList from '../components/EditableStudentList'
+import { useSession } from 'next-auth/react'
+import router from 'next/router'
+
+const GRADES = ['Sala Cuna', 'NT1', 'NT2']
 
 const Configurar = () => {
   const queryClient = useQueryClient()
   const [gradeId, setGradeId] = useState<number | null>(null)
-  const [gradeName, setGradeName] = useState('')
+  const [gradeName, setGradeName] = useState(GRADES[0])
   const [classrooms, setClassrooms] = useState<Array<string> | null>(
     null
   )
+
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.replace('/login')
+    },
+  })
 
   const gradeQuery = useQuery({
     queryKey: ['grades'],
@@ -65,12 +76,15 @@ const Configurar = () => {
           <p className="mb-4">¿Qué curso quieres agregar?</p>
           <div className="flex gap-2">
             <select
+              defaultValue={GRADES[0]}
               onChange={(event) => setGradeName(event.target.value)}
               className="rounded-md py-3 px-2 bg-white text-dark border border-accent"
               title="grade creator"
             >
-              {['Sala Cuna', 'NT1', 'NT2'].map((grade, i) => (
-                <option key={i}>{grade}</option>
+              {GRADES.map((grade, i) => (
+                <option key={i} value={grade}>
+                  {grade}
+                </option>
               ))}
             </select>
 

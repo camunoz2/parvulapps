@@ -21,14 +21,12 @@ async function main() {
   const dCategory = await prisma.category.deleteMany()
   console.log('deleted categories: ', dCategory)
 
-  const dTeacher = await prisma.teacher.deleteMany()
-  console.log('deleted teachers: ', dTeacher)
-
   // Create Grade
   const sala = await prisma.grade.create({
     data: {
       classroom: 'Sala Cuna',
       section: 'A',
+      teacherId: process.env.MY_GOOGLE_ID,
     },
   })
   console.log('create grade: ', sala)
@@ -36,6 +34,7 @@ async function main() {
     data: {
       classroom: 'NT1',
       section: 'A',
+      teacherId: process.env.MY_GOOGLE_ID,
     },
   })
   console.log('create grade: ', nt1A)
@@ -43,6 +42,7 @@ async function main() {
     data: {
       classroom: 'NT2',
       section: 'A',
+      teacherId: process.env.MY_GOOGLE_ID,
     },
   })
   console.log('create grade: ', nt2A)

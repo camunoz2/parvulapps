@@ -2,6 +2,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import ResultsTable from '../components/ResultsTable'
+import SideBar from '../components/SideBar'
 import Layout from '../components/UI/Layout'
 
 const Resultados = () => {

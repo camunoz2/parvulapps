@@ -29,6 +29,7 @@ const DashboardPage = () => {
             <h1 className="text-5xl font-bold">
               {session?.user?.name ? session.user.name : 'Profesor@'}
             </h1>
+            <p>{session?.user?.email}</p>
           </div>
 
           <div className="flex gap-2">
