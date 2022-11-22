@@ -6,34 +6,38 @@ export default async function addSection(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await getSession({ req })
-  if (!session)
-    return res.status(401).json({ message: 'Acceso no autorizado' })
+  try {
+    const session = await getSession({ req })
+    if (!session)
+      return res.status(401).json({ message: 'Acceso no autorizado' })
 
-  const sectionsLetter = ['A', 'B', 'C', 'D', 'E']
+    const sectionsLetter = ['A', 'B', 'C', 'D', 'E']
 
-  const sections = await prisma.grade.count({
-    where: {
-      classroom: req.body.gradeName,
-    },
-  })
-
-  if (session.user?.email) {
-    const teacher = await prisma.user.findUnique({
+    const sections = await prisma.grade.count({
       where: {
-        email: session.user.email,
+        classroom: req.body.gradeName,
       },
     })
 
-    if (sections < sectionsLetter.length) {
-      await prisma.grade.create({
-        data: {
-          classroom: req.body.gradeName,
-          section: sectionsLetter[sections],
-          teacherId: teacher!.id,
+    if (session.user?.email) {
+      const teacher = await prisma.user.findUnique({
+        where: {
+          email: session.user.email,
         },
       })
+
+      if (sections < sectionsLetter.length) {
+        await prisma.grade.create({
+          data: {
+            classroom: req.body.gradeName,
+            section: sectionsLetter[sections],
+            teacherId: teacher!.id,
+          },
+        })
+      }
     }
+    res.status(200).end()
+  } catch (error) {
+    console.log(error)
   }
-  res.status(200).end()
 }
