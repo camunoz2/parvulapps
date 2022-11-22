@@ -1,13 +1,19 @@
 import { Grade, Student } from '@prisma/client'
 import {
+  QueryClient,
   useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
 import { useState } from 'react'
 
-const GradeCreator = ({ grade }: { grade: Grade }) => {
-  const queryClient = useQueryClient()
+const GradeCreator = ({
+  grade,
+  queryClient,
+}: {
+  grade: Grade
+  queryClient: QueryClient
+}) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const studentsQuery = useQuery({
@@ -30,6 +36,7 @@ const GradeCreator = ({ grade }: { grade: Grade }) => {
         body: JSON.stringify({ gradeId: grade.id }),
       })
     },
+
     onSuccess: () => {
       queryClient.invalidateQueries(['grades'])
     },
@@ -62,8 +69,8 @@ const GradeCreator = ({ grade }: { grade: Grade }) => {
               </button>
               <button
                 onClick={() => {
-                  deleteSection.mutate()
                   setIsOpen(false)
+                  deleteSection.mutate()
                 }}
                 className="bg-red-400 text-white py-2 px-4 rounded-md"
               >

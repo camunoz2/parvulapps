@@ -64,21 +64,16 @@ const Configurar = () => {
           <h2 className="text-xl font-bold">Secciones</h2>
           <p className="mb-4">¿Qué curso quieres agregar?</p>
           <div className="flex gap-2">
-            {gradeQuery.isLoading ? (
-              <p>loading...</p>
-            ) : (
-              <select
-                onChange={(event) => setGradeName(event.target.value)}
-                className="rounded-md py-3 px-2 bg-white text-dark border border-accent"
-                title="grade creator"
-              >
-                {classrooms &&
-                  classrooms?.length > 0 &&
-                  classrooms.map((grade, i) => (
-                    <option key={i}>{grade}</option>
-                  ))}
-              </select>
-            )}
+            <select
+              onChange={(event) => setGradeName(event.target.value)}
+              className="rounded-md py-3 px-2 bg-white text-dark border border-accent"
+              title="grade creator"
+            >
+              {['Sala Cuna', 'NT1', 'NT2'].map((grade, i) => (
+                <option key={i}>{grade}</option>
+              ))}
+            </select>
+
             <button
               onClick={() => createGrade.mutate()}
               className="px-4 py-3 bg-accent rounded-md hover:cursor-pointer hover:shadow-md"
@@ -91,7 +86,13 @@ const Configurar = () => {
               <p>Loading...</p>
             ) : (
               gradeQuery.data?.map((grade) => {
-                return <GradeCreator key={grade.id} grade={grade} />
+                return (
+                  <GradeCreator
+                    queryClient={queryClient}
+                    key={grade.id}
+                    grade={grade}
+                  />
+                )
               })
             )}
           </div>
