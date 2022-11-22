@@ -1,15 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
-import { getSession } from 'next-auth/react'
+import { unstable_getServerSession } from 'next-auth'
+import { authOptions } from './auth/[...nextauth]'
 
 export default async function addSection(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    const session = await getSession({ req })
-    if (!session)
-      return res.status(401).json({ message: 'Acceso no autorizado' })
+    const session = await unstable_getServerSession(
+      req,
+      res,
+      authOptions
+    )
+    if (!session?.user?.email)
+      return res
+        .status(400)
+        .send({ message: 'El usuario no tiene un email valido' })
 
     const sectionsLetter = ['A', 'B', 'C', 'D', 'E']
 

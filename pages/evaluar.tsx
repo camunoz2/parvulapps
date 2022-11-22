@@ -53,10 +53,7 @@ const Evaluar = () => {
     },
   })
 
-  useEffect(() => {
-    router.replace('/evaluar')
-  }, [''])
-
+  // TODO: Fix sidebar filter evaluation
   const [student, setStudent] = useState({
     name: '',
     id: 0,
