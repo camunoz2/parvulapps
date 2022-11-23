@@ -15,6 +15,9 @@ module.exports = {
         dark: '#090721',
         lightblue: '#D6F0FC',
       },
+      boxShadow: {
+        custom: '0px 12px 12px rgba(9, 7, 33, 0.05)',
+      },
     },
   },
   plugins: [],

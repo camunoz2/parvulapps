@@ -43,13 +43,25 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
   const handleSelect = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    router.push({
-      pathname: '/evaluar',
-      query: {
-        ...router.query,
-        [event.target.name]: encodeURI(event.target.value),
-      },
-    })
+    if (event.target.name === 'categories') {
+      // For reseting the cores selector
+      router.push({
+        pathname: '/evaluar',
+        query: {
+          ...router.query,
+          [event.target.name]: encodeURI(event.target.value),
+          core: encodeURI('0'),
+        },
+      })
+    } else {
+      router.push({
+        pathname: '/evaluar',
+        query: {
+          ...router.query,
+          [event.target.name]: encodeURI(event.target.value),
+        },
+      })
+    }
   }
 
   const selectStyles =
@@ -157,7 +169,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
                 <div className="flex gap-1">
                   <select
                     title="category selector"
-                    onChange={handleSelect}
+                    onChange={(event) => handleSelect(event)}
                     name="categories"
                     className={selectStyles}
                   >
@@ -181,9 +193,11 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
                     name="core"
                     className={selectStyles}
                   >
-                    {!router.query.core && (
+                    {(!router.query.core ||
+                      router.query.core === '0') && (
                       <option>Elige una opcion</option>
                     )}
+
                     {filtersQuery.data?.cores
                       .filter(
                         (core) =>
