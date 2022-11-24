@@ -6,8 +6,6 @@ import Layout from '../components/UI/Layout'
 import Logo from '../components/UI/Logo'
 
 const LoginPage = () => {
-  const background = ''
-
   return (
     <>
       <Head>

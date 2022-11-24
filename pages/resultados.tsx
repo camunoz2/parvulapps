@@ -1,8 +1,8 @@
 import { Grade, Objective, Student } from '@prisma/client'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import StudentCard from '../components/StudentCard'
 import StudentStatCard from '../components/StudentStatCard'
 import Layout from '../components/UI/Layout'
@@ -10,19 +10,15 @@ import { EVAL_TERMS, TOTAL_OBJECTIVE_SCORE } from '../utils/constants'
 
 const Resultados = () => {
   const router = useRouter()
+  const { status } = useSession()
+  if (status === 'unauthenticated') {
+    router.replace('/login')
+  }
+
   const [gradeId, setGradeId] = useState<number>()
   const [search, setSearch] = useState<string>()
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [isOpen, setIsOpen] = useState(false)
-
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.replace('/login')
-    },
-  })
-
-  const queryClient = useQueryClient()
 
   const gradeQuery = useQuery({
     queryKey: ['grades'],

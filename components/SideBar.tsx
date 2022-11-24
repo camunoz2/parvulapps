@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
@@ -10,11 +9,15 @@ import Link from 'next/link'
 interface Props {
   handleStudentList: React.Dispatch<React.SetStateAction<boolean>>
   studentListMenu: boolean
+  userName: string
 }
 
-const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
+const SideBar = ({
+  handleStudentList,
+  studentListMenu,
+  userName,
+}: Props) => {
   const router = useRouter()
-  const { data: session, status } = useSession()
   const [filter, setFilter] = useState(false)
 
   useEffect(() => {
@@ -102,9 +105,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
           <div className="flex items-center gap-2 bg-dark/30 text-white px-4  mb-2 lg:mb-16 py-1 lg:py-6">
             <div className="w-12 h-12 rounded-full bg-white border" />
             <div className=" hidden lg:block">
-              <h3 className="font-bold lg:text-xl">
-                {session?.user?.name}
-              </h3>
+              <h3 className="font-bold lg:text-xl">{userName}</h3>
             </div>
           </div>
           <div className="px-4">

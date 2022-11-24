@@ -15,16 +15,14 @@ import router from 'next/router'
 const GRADES = ['Sala Cuna', 'NT1', 'NT2']
 
 const Configurar = () => {
+  const { status } = useSession()
   const queryClient = useQueryClient()
   const [gradeId, setGradeId] = useState<number | null>(null)
   const [gradeName, setGradeName] = useState(GRADES[0])
 
-  const { status } = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.replace('/login')
-    },
-  })
+  if (status === 'unauthenticated') {
+    router.replace('/login')
+  }
 
   const gradeQuery = useQuery({
     queryKey: ['grades'],

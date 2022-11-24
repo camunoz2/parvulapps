@@ -7,12 +7,11 @@ import { useRouter } from 'next/router'
 
 const DashboardPage = () => {
   const router = useRouter()
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.replace('/login')
-    },
-  })
+  const { data: session, status } = useSession()
+
+  if (status === 'unauthenticated') {
+    router.replace('/login')
+  }
 
   return (
     <>
