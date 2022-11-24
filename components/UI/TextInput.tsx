@@ -26,6 +26,7 @@ const TextInput = ({
     <div className="flex flex-col gap-1">
       <label htmlFor="name">{text}</label>
       <input
+        title={name}
         onChange={setValue}
         className="border border-gray-400"
         type="text"

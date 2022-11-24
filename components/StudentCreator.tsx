@@ -38,6 +38,7 @@ const StudentCreator = ({ classroom, section }: Props) => {
   return (
     <div>
       <input
+        title="Nombre"
         type="text"
         className="border border-gray-400"
         onChange={(event) => {
@@ -47,6 +48,7 @@ const StudentCreator = ({ classroom, section }: Props) => {
         name="firstName"
       />
       <input
+        title="Apellido"
         type="text"
         className="border border-gray-400"
         onChange={(event) => {
@@ -56,6 +58,7 @@ const StudentCreator = ({ classroom, section }: Props) => {
         name="lastName"
       />
       <input
+        title="Rut"
         type="text"
         className="border border-gray-400"
         onChange={(event) => {

@@ -88,6 +88,7 @@ const EditableStudentList = ({ gradeId }: Props) => {
             <div className="flex flex-col">
               <label>Nombre</label>
               <input
+                title="Nombre"
                 className="p-2 border border-accent"
                 type="text"
                 name="firstName"
@@ -104,6 +105,7 @@ const EditableStudentList = ({ gradeId }: Props) => {
               <label>Apellido</label>
 
               <input
+                title="Apellido"
                 className="p-2 border border-accent"
                 type="text"
                 defaultValue={modal.studentLastName}
@@ -121,6 +123,7 @@ const EditableStudentList = ({ gradeId }: Props) => {
               <label>Rut</label>
 
               <input
+                title="Rut"
                 className="p-2 border border-accent"
                 type="text"
                 defaultValue={modal.studentRut}
