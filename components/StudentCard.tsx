@@ -1,5 +1,5 @@
 import { Grade, Objective, Student } from '@prisma/client'
-import { QueryClient, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { EvalTerms } from '../types/app'
 import {
@@ -14,7 +14,6 @@ interface Props {
   student: Student
   grade?: Grade
   objectives: Objective[]
-  queryClient?: QueryClient
 }
 
 interface Agregate {
@@ -26,12 +25,7 @@ interface Agregate {
   }
 }
 
-const StudentCard = ({
-  student,
-  grade,
-  objectives,
-  queryClient,
-}: Props) => {
+const StudentCard = ({ student, grade, objectives }: Props) => {
   const [currentEvalTerm, setCurrentEvalTerm] = useState<EvalTerms>(
     EVAL_TERMS[0]
   )
@@ -111,6 +105,7 @@ const StudentCard = ({
           <div className="flex gap-1">
             {EVAL_TERMS.map((item) => (
               <button
+                key={item.id}
                 className={`p-1 rounded-md text-xs ${
                   item.id === currentEvalTerm.id
                     ? 'bg-accent'
@@ -181,7 +176,7 @@ const StudentCard = ({
                   score._sum.secondTermScore +
                   score._sum.thirdTermScore
                 return (
-                  <div className="flex gap-1">
+                  <div key={i} className="flex gap-1">
                     <CircleGraph
                       score={() =>
                         getScorePercentByCore(
@@ -193,20 +188,8 @@ const StudentCard = ({
                     />
                   </div>
                 )
-              } else return
+              } else return ''
             })}
-            {/* <CircleGraph
-              percentage="100%"
-              title="Desarrollo personal y social"
-            />
-            <CircleGraph
-              percentage="45%"
-              title="Comunicación integral"
-            />
-            <CircleGraph
-              percentage="0%"
-              title="Interacción y comprensión del entorno"
-            /> */}
           </div>
         )}
       </div>

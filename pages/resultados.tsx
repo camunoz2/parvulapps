@@ -197,7 +197,6 @@ const Resultados = () => {
             gradeQuery.isSuccess &&
             objByStdQuery.isSuccess && (
               <StudentCard
-                queryClient={queryClient}
                 student={selectedStudent}
                 objectives={objByStdQuery.data}
                 grade={gradeQuery.data.find(
@@ -229,6 +228,7 @@ const Resultados = () => {
                 {EVAL_TERMS.map((item) => {
                   return (
                     <StudentStatCard
+                      key={item.id}
                       scores={getEvalTermPercentage()}
                       title={item.name}
                       index={item.id}
