@@ -105,12 +105,6 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
               <h3 className="font-bold lg:text-xl">
                 {session?.user?.name}
               </h3>
-              <p
-                onClick={() => signOut()}
-                className="text-xs font-light hover:text-accent hover:cursor-pointer"
-              >
-                Cerrar Sesión
-              </p>
             </div>
           </div>
           <div className="px-4">

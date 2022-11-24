@@ -18,9 +18,6 @@ const Configurar = () => {
   const queryClient = useQueryClient()
   const [gradeId, setGradeId] = useState<number | null>(null)
   const [gradeName, setGradeName] = useState(GRADES[0])
-  const [classrooms, setClassrooms] = useState<Array<string> | null>(
-    null
-  )
 
   const { status } = useSession({
     required: true,
@@ -32,7 +29,6 @@ const Configurar = () => {
   const gradeQuery = useQuery({
     queryKey: ['grades'],
     queryFn: getGrades,
-    onSuccess: getClassrooms,
   })
 
   function getGrades(): Promise<Grade[]> {
@@ -54,13 +50,6 @@ const Configurar = () => {
     },
     onSuccess: () => queryClient.invalidateQueries(['grades']),
   })
-
-  function getClassrooms(arr: Grade[]) {
-    const result = new Set<string>()
-    arr.map((grade) => result.add(grade.classroom))
-    const newArr = Array.from(result)
-    setClassrooms(newArr)
-  }
 
   return (
     <Layout>
