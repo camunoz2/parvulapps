@@ -20,6 +20,15 @@ export default async function getStudents(
 
       res.status(200).send(filteredStudents)
     }
+    if (req.method === 'POST' && req.body.single === true) {
+      const singleStudent = await prisma.student.findUnique({
+        where: {
+          id: req.body.studentId,
+        },
+      })
+
+      res.status(200).send(singleStudent)
+    }
   } catch (e) {
     console.log(e)
     res.status(400).send('Error with students list')

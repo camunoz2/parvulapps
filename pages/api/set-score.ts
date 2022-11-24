@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
-import { TERMS } from '../evaluar'
+import { TERMS } from '../../utils/constants'
 
 export default async function setScore(
   req: NextApiRequest,

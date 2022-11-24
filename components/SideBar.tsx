@@ -3,7 +3,7 @@ import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import { TERMS } from '../pages/evaluar'
+import { TERMS } from '../utils/constants'
 import { Curriculum } from '../types/app'
 import Link from 'next/link'
 

@@ -1,19 +1,39 @@
-import { Grade } from '@prisma/client'
+import { Grade, Objective, Student } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import StudentCard from '../components/StudentCard'
 import StudentStatCard from '../components/StudentStatCard'
 import Layout from '../components/UI/Layout'
 
 const Resultados = () => {
   const router = useRouter()
-  const [grade, setGrade] = useState<number>()
+  const [gradeId, setGradeId] = useState<number>()
+  const [search, setSearch] = useState<string>()
+  const [selectedStudent, setSelectedStudent] = useState<Student>()
+  const [isOpen, setIsOpen] = useState(false)
+
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.replace('/login')
+    },
+  })
 
   const gradeQuery = useQuery({
     queryKey: ['grades'],
     queryFn: getGrades,
+  })
+  const studentsQuery = useQuery({
+    queryKey: ['students'],
+    queryFn: getStudents,
+  })
+
+  const objQuery = useQuery({
+    queryKey: ['cores'],
+    queryFn: getObjsByStudent,
+    enabled: !!selectedStudent,
   })
 
   function getGrades(): Promise<Grade[]> {
@@ -23,12 +43,41 @@ const Resultados = () => {
     }).then((res) => res.json())
   }
 
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.replace('/login')
-    },
-  })
+  function getStudents(): Promise<Student[]> {
+    return fetch('/api/get-students', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        grade: gradeId,
+      }),
+    }).then((res) => res.json())
+  }
+
+  function getObjsByStudent(): Promise<Objective[]> {
+    const objs = fetch('/api/get-objectives-student', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        single: true,
+        studentId: selectedStudent?.id,
+      }),
+    }).then((res) => res.json())
+
+    return objs
+  }
+
+  const handleSearch = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsOpen(true)
+    setSearch(event.target.value)
+  }
+
+  const handleSelected = (student: Student) => {
+    setSelectedStudent(student)
+    setSearch(`${student.name} ${student.lastName}`)
+    setIsOpen(false)
+  }
 
   return (
     <Layout>
@@ -44,11 +93,11 @@ const Resultados = () => {
               <select
                 title="grade selector"
                 onChange={(event) =>
-                  setGrade(parseInt(event.target.value))
+                  setGradeId(parseInt(event.target.value))
                 }
                 className="border border-accent rounded-md px-2 h-10"
               >
-                {!grade && (
+                {!gradeId && (
                   <option defaultChecked>Elije un curso</option>
                 )}
                 {gradeQuery.data?.map((grade) => {
@@ -64,11 +113,32 @@ const Resultados = () => {
           {/* Search */}
           <div className="flex flex-col gap-2">
             <label className="italic font-light">Buscar Alumno</label>
-            <input
-              className="border border-accent rounded-md px-2 h-10"
-              title="search"
-              type="search"
-            />
+            <div className="relative">
+              <input
+                className="border border-accent rounded-md px-2 h-10 w-96"
+                title="search"
+                type="search"
+                onChange={handleSearch}
+                value={search || ''}
+              />
+              <ul
+                className={`${
+                  isOpen ? 'block' : 'hidden'
+                } absolute top-10 left-0 bg-white/50 border border-accent w-full rounded-md`}
+              >
+                {search &&
+                  studentsQuery.isSuccess &&
+                  studentsQuery.data?.map((student) => (
+                    <li
+                      key={student.id}
+                      className="hover:cursor-pointer hover:bg-slate-200 px-2 py-3"
+                      onClick={() => handleSelected(student)}
+                    >
+                      {student.name} {student.lastName}
+                    </li>
+                  ))}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -80,7 +150,18 @@ const Resultados = () => {
 
       <div className="grid grid-cols-7 gap-4">
         <div className="col-span-2">
-          <StudentCard />
+          {selectedStudent &&
+            gradeId &&
+            gradeQuery.isSuccess &&
+            objQuery.isSuccess && (
+              <StudentCard
+                student={selectedStudent}
+                objectives={objQuery.data}
+                grade={gradeQuery.data.find(
+                  (grade) => grade.id === gradeId
+                )}
+              />
+            )}
         </div>
         <div className="col-span-5">
           <div className="flex justify-between my-4">
@@ -90,7 +171,6 @@ const Resultados = () => {
             </div>
             <p className="font-bold italic">23.456.789-6</p>
           </div>
-
           <div className="grid grid-cols-3 gap-4">
             <StudentStatCard
               percentage="43%"
@@ -106,7 +186,6 @@ const Resultados = () => {
               stat="+7%"
             />
           </div>
-
           <div className="mt-6">
             <h4 className="mb-4">
               Evaluaciones pendientes y completadas

@@ -6,11 +6,10 @@ export default async function getObjectives(
   res: NextApiResponse
 ) {
   try {
-    if (req.method === 'POST') {
+    if (req.method === 'POST' && req.body.single === true) {
       const obj = await prisma.objective.findMany({
         where: {
           studentId: req.body.studentId,
-          parentCoreId: req.body.core,
         },
       })
 

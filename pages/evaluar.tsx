@@ -1,4 +1,4 @@
-import { Grade, Objective } from '@prisma/client'
+import type { Grade, Objective } from '@prisma/client'
 import {
   useMutation,
   useQuery,
@@ -13,21 +13,7 @@ import StudentList from '../components/StudentList'
 import Dashed from '../components/UI/Dashed'
 import Logo from '../components/UI/Logo'
 import Menu from '../components/UI/Menu'
-
-export const TERMS = [
-  {
-    name: 'Diagnóstica',
-    id: 0,
-  },
-  {
-    name: 'Intermedia',
-    id: 1,
-  },
-  {
-    name: 'Final',
-    id: 2,
-  },
-]
+import { MAX_SCORE, TERMS } from '../utils/constants'
 
 const COLORS = [
   'bg-white',
@@ -300,12 +286,13 @@ const Evaluar = () => {
                                 : obj.thirdTermScore
                             }
                           >
-                            <option value={0}>N/O</option>
-                            <option value={1}>1</option>
-                            <option value={2}>2</option>
-                            <option value={3}>3</option>
-                            <option value={4}>4</option>
-                            <option value={5}>5</option>
+                            {MAX_SCORE.map((val, i) => {
+                              return (
+                                <option key={i} value={val}>
+                                  {val === 0 ? 'N/O' : val}
+                                </option>
+                              )
+                            })}
                           </select>
                         </div>
                       )

@@ -1,15 +1,112 @@
+import { Grade, Objective, Student } from '@prisma/client'
+import { useQuery } from '@tanstack/react-query'
+import {
+  CATEGORIES,
+  CORES,
+  MAX_SCORE,
+  TOTAL_OBJECTIVE_SCORE,
+} from '../utils/constants'
 import CircleGraph from './CircleGraph'
 
-const StudentCard = () => {
+interface Props {
+  student: Student
+  grade?: Grade
+  objectives: Objective[]
+}
+
+interface Agregate {
+  parentCoreId: number
+  _sum: {
+    firstTermScore: number
+    secondTermScore: number
+    thirdTermScore: number
+  }
+}
+
+const StudentCard = ({ student, grade, objectives }: Props) => {
+  const coresWithLessScore = useQuery({
+    queryKey: ['scores'],
+    queryFn: (): Promise<Agregate[]> => {
+      return fetch('/api/get-less-score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentId: student.id,
+        }),
+      }).then((res) => res.json())
+    },
+  })
+
+  function getObjectivesScoreBy(
+    filter: number,
+    identifier: 'level' | 'parentCoreId'
+  ) {
+    const currentScore = objectives
+      .filter((obj) => obj[identifier] === filter)
+      .reduce(
+        (prev, acc) =>
+          prev +
+          acc.firstTermScore +
+          acc.secondTermScore +
+          acc.thirdTermScore,
+        0
+      )
+    const percentage = Math.floor(
+      (currentScore * 100) / TOTAL_OBJECTIVE_SCORE
+    )
+
+    return percentage
+  }
+
+  function getScorePercentByCore(
+    coreId: number,
+    currentScore: number
+  ) {
+    const totalObjectivesByCore = objectives.filter(
+      (obj) => obj.parentCoreId === coreId
+    ).length
+    const totalScoreByObjective =
+      totalObjectivesByCore * MAX_SCORE[MAX_SCORE.length - 1]
+
+    const percentage = Math.floor(
+      (currentScore * 100) / totalScoreByObjective
+    )
+
+    return percentage
+  }
+
+  function sortScores() {
+    const ordered = coresWithLessScore.data?.sort((a, b) => {
+      const aTotal =
+        a._sum.firstTermScore +
+        a._sum.secondTermScore +
+        a._sum.thirdTermScore
+      const bTotal =
+        b._sum.firstTermScore +
+        b._sum.secondTermScore +
+        b._sum.thirdTermScore
+
+      return aTotal - bTotal
+    })
+
+    return ordered
+  }
+
+  if (!student) return <p>Selecciona un estudiante</p>
+
   return (
     <div className=" border border-accent rounded-md py-6 px-6 bg-white">
       {/* Name info */}
       <div className="flex justify-between items-start mb-3">
         <div className="flex flex-col">
-          <h2 className="text-xl font-bold">Tiana Quitzon</h2>
-          <p className="italic text-xs">Kinder</p>
+          <h2 className="text-xl font-bold">
+            {student.name} {student.lastName}
+          </h2>
+          <p className="italic text-xs">
+            {grade?.classroom} {grade?.section}
+          </p>
         </div>
-        <div className="font-bold">23.234.567-8</div>
+        <div className="font-bold">{student.rut}</div>
       </div>
       <div className="h-[1px] w-full border border-dashed border-accent" />
       <div className="my-3">
@@ -17,9 +114,18 @@ const StudentCard = () => {
           Objetivos logrados por nivel
         </h2>
         <div className="grid grid-cols-3">
-          <CircleGraph percentage="100%" title="Nivel 1" />
-          <CircleGraph percentage="45%" title="Nivel 2" />
-          <CircleGraph percentage="0%" title="Nivel 3" />
+          <CircleGraph
+            title="Nivel 1"
+            score={() => getObjectivesScoreBy(1, 'level')}
+          />
+          <CircleGraph
+            title="Nivel 2"
+            score={() => getObjectivesScoreBy(2, 'level')}
+          />
+          <CircleGraph
+            title="Nivel 3"
+            score={() => getObjectivesScoreBy(3, 'level')}
+          />
         </div>
       </div>
       <div className="my-3">
@@ -28,16 +134,16 @@ const StudentCard = () => {
         </h2>
         <div className="grid grid-cols-3">
           <CircleGraph
-            percentage="100%"
             title="Desarrollo personal y social"
+            score={() => getObjectivesScoreBy(1, 'parentCoreId')}
           />
           <CircleGraph
-            percentage="45%"
             title="Comunicación integral"
+            score={() => getObjectivesScoreBy(2, 'parentCoreId')}
           />
           <CircleGraph
-            percentage="0%"
             title="Interacción y comprensión del entorno"
+            score={() => getObjectivesScoreBy(3, 'parentCoreId')}
           />
         </div>
       </div>
@@ -45,20 +151,48 @@ const StudentCard = () => {
         <h2 className="text-sm font-bold mb-5">
           Núcleos mas descendidos.
         </h2>
-        <div className="grid grid-cols-3">
-          <CircleGraph
-            percentage="100%"
-            title="Desarrollo personal y social"
-          />
-          <CircleGraph
-            percentage="45%"
-            title="Comunicación integral"
-          />
-          <CircleGraph
-            percentage="0%"
-            title="Interacción y comprensión del entorno"
-          />
-        </div>
+        {coresWithLessScore.isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <div className="grid grid-cols-3">
+            {sortScores()?.map((score, i) => {
+              if (i <= 2) {
+                const coreName = CORES.find(
+                  (core) => core.id === score.parentCoreId
+                )?.name
+                const totalCoreScore =
+                  score._sum.firstTermScore +
+                  score._sum.secondTermScore +
+                  score._sum.thirdTermScore
+                return (
+                  <div className="flex gap-1">
+                    <CircleGraph
+                      score={() =>
+                        getScorePercentByCore(
+                          score.parentCoreId,
+                          totalCoreScore
+                        )
+                      }
+                      title={coreName || ''}
+                    />
+                  </div>
+                )
+              } else return
+            })}
+            {/* <CircleGraph
+              percentage="100%"
+              title="Desarrollo personal y social"
+            />
+            <CircleGraph
+              percentage="45%"
+              title="Comunicación integral"
+            />
+            <CircleGraph
+              percentage="0%"
+              title="Interacción y comprensión del entorno"
+            /> */}
+          </div>
+        )}
       </div>
     </div>
   )
