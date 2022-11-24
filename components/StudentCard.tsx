@@ -1,8 +1,10 @@
 import { Grade, Objective, Student } from '@prisma/client'
-import { useQuery } from '@tanstack/react-query'
+import { QueryClient, useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import { EvalTerms } from '../types/app'
 import {
-  CATEGORIES,
   CORES,
+  EVAL_TERMS,
   MAX_SCORE,
   TOTAL_OBJECTIVE_SCORE,
 } from '../utils/constants'
@@ -12,6 +14,7 @@ interface Props {
   student: Student
   grade?: Grade
   objectives: Objective[]
+  queryClient?: QueryClient
 }
 
 interface Agregate {
@@ -23,7 +26,16 @@ interface Agregate {
   }
 }
 
-const StudentCard = ({ student, grade, objectives }: Props) => {
+const StudentCard = ({
+  student,
+  grade,
+  objectives,
+  queryClient,
+}: Props) => {
+  const [currentEvalTerm, setCurrentEvalTerm] = useState<EvalTerms>(
+    EVAL_TERMS[0]
+  )
+
   const coresWithLessScore = useQuery({
     queryKey: ['scores'],
     queryFn: (): Promise<Agregate[]> => {
@@ -44,11 +56,8 @@ const StudentCard = ({ student, grade, objectives }: Props) => {
     const currentScore = objectives
       .filter((obj) => obj[identifier] === filter)
       .reduce(
-        (prev, acc) =>
-          prev +
-          acc.firstTermScore +
-          acc.secondTermScore +
-          acc.thirdTermScore,
+        (prev, acc) => prev + acc[currentEvalTerm.key],
+
         0
       )
     const percentage = Math.floor(
@@ -77,16 +86,7 @@ const StudentCard = ({ student, grade, objectives }: Props) => {
 
   function sortScores() {
     const ordered = coresWithLessScore.data?.sort((a, b) => {
-      const aTotal =
-        a._sum.firstTermScore +
-        a._sum.secondTermScore +
-        a._sum.thirdTermScore
-      const bTotal =
-        b._sum.firstTermScore +
-        b._sum.secondTermScore +
-        b._sum.thirdTermScore
-
-      return aTotal - bTotal
+      return a._sum[currentEvalTerm.key] - b._sum[currentEvalTerm.key]
     })
 
     return ordered
@@ -106,7 +106,23 @@ const StudentCard = ({ student, grade, objectives }: Props) => {
             {grade?.classroom} {grade?.section}
           </p>
         </div>
-        <div className="font-bold">{student.rut}</div>
+        <div className="flex flex-col gap-1">
+          <p className="font-bold self-end">{student.rut}</p>
+          <div className="flex gap-1">
+            {EVAL_TERMS.map((item) => (
+              <button
+                className={`p-1 rounded-md text-xs ${
+                  item.id === currentEvalTerm.id
+                    ? 'bg-accent'
+                    : 'bg-slate-500'
+                }`}
+                onClick={() => setCurrentEvalTerm(item)}
+              >
+                {item.name}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
       <div className="h-[1px] w-full border border-dashed border-accent" />
       <div className="my-3">

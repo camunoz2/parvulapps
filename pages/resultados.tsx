@@ -1,11 +1,12 @@
 import { Grade, Objective, Student } from '@prisma/client'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import StudentCard from '../components/StudentCard'
 import StudentStatCard from '../components/StudentStatCard'
 import Layout from '../components/UI/Layout'
+import { EVAL_TERMS, TOTAL_OBJECTIVE_SCORE } from '../utils/constants'
 
 const Resultados = () => {
   const router = useRouter()
@@ -21,6 +22,8 @@ const Resultados = () => {
     },
   })
 
+  const queryClient = useQueryClient()
+
   const gradeQuery = useQuery({
     queryKey: ['grades'],
     queryFn: getGrades,
@@ -30,8 +33,8 @@ const Resultados = () => {
     queryFn: getStudents,
   })
 
-  const objQuery = useQuery({
-    queryKey: ['cores'],
+  const objByStdQuery = useQuery({
+    queryKey: ['cores', selectedStudent],
     queryFn: getObjsByStudent,
     enabled: !!selectedStudent,
   })
@@ -77,6 +80,45 @@ const Resultados = () => {
     setSelectedStudent(student)
     setSearch(`${student.name} ${student.lastName}`)
     setIsOpen(false)
+  }
+
+  const getGradeName = () => {
+    if (gradeQuery.isSuccess)
+      return gradeQuery.data.find((grade) => grade.id === gradeId)
+        ?.classroom
+  }
+
+  const getEvalTermPercentage = () => {
+    if (objByStdQuery.isSuccess) {
+      const totalScoreByEvalTerm = TOTAL_OBJECTIVE_SCORE
+
+      const firstTermTotal = objByStdQuery.data.reduce(
+        (prev, curr) => curr.firstTermScore + prev,
+        0
+      )
+      const secondTermTotal = objByStdQuery.data.reduce(
+        (prev, curr) => curr.secondTermScore + prev,
+        0
+      )
+      const thirdTermTotal = objByStdQuery.data.reduce(
+        (prev, curr) => curr.thirdTermScore + prev,
+        0
+      )
+
+      const firstTermPercentage =
+        (firstTermTotal * 100) / totalScoreByEvalTerm
+      const secondTermPercentage =
+        (secondTermTotal * 100) / totalScoreByEvalTerm
+      const thirdTermPercentage =
+        (thirdTermTotal * 100) / totalScoreByEvalTerm
+
+      return [
+        Math.floor(firstTermPercentage),
+        Math.floor(secondTermPercentage),
+        Math.floor(thirdTermPercentage),
+      ]
+    }
+    return [0, 0, 0]
   }
 
   return (
@@ -153,10 +195,11 @@ const Resultados = () => {
           {selectedStudent &&
             gradeId &&
             gradeQuery.isSuccess &&
-            objQuery.isSuccess && (
+            objByStdQuery.isSuccess && (
               <StudentCard
+                queryClient={queryClient}
                 student={selectedStudent}
-                objectives={objQuery.data}
+                objectives={objByStdQuery.data}
                 grade={gradeQuery.data.find(
                   (grade) => grade.id === gradeId
                 )}
@@ -164,55 +207,66 @@ const Resultados = () => {
             )}
         </div>
         <div className="col-span-5">
-          <div className="flex justify-between my-4">
-            <div className="flex flex-col">
-              <h2 className="text-2xl font-bold">Tatiana Quitzon</h2>
-              <p className="text-sm italic font-light">Kinder</p>
-            </div>
-            <p className="font-bold italic">23.456.789-6</p>
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            <StudentStatCard
-              percentage="43%"
-              title="Evaluación diagnóstica"
-            />
-            <StudentStatCard
-              percentage="43%"
-              title="Evaluación intermedia"
-            />
-            <StudentStatCard
-              percentage="50%"
-              title="Evaluación final"
-              stat="+7%"
-            />
-          </div>
-          <div className="mt-6">
-            <h4 className="mb-4">
-              Evaluaciones pendientes y completadas
-            </h4>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="border rounded-md bg-white p-2 flex gap-2">
-                <div className="w-12 h-12 rounded-md bg-slate-300"></div>
-                <div>
-                  <h6>Objetivos totales evaluados</h6>
-                  <p className="text-xl font-bold">57/206</p>
+          {selectedStudent &&
+          gradeId &&
+          gradeQuery.isSuccess &&
+          objByStdQuery.isSuccess ? (
+            <>
+              <div className="flex justify-between my-4">
+                <div className="flex flex-col">
+                  <h2 className="text-2xl font-bold">
+                    {selectedStudent.name} {selectedStudent.lastName}
+                  </h2>
+                  <p className="text-sm italic font-light">
+                    {getGradeName()}
+                  </p>
+                </div>
+                <p className="font-bold italic">
+                  {selectedStudent.rut}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                {EVAL_TERMS.map((item) => {
+                  return (
+                    <StudentStatCard
+                      scores={getEvalTermPercentage()}
+                      title={item.name}
+                      index={item.id}
+                    />
+                  )
+                })}
+              </div>
+              <div className="mt-6">
+                <h4 className="mb-4">
+                  Evaluaciones pendientes y completadas
+                </h4>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="border rounded-md bg-white p-2 flex gap-2">
+                    <div className="w-12 h-12 rounded-md bg-slate-300"></div>
+                    <div>
+                      <h6>Objetivos totales evaluados</h6>
+                      <p className="text-xl font-bold">57/206</p>
+                    </div>
+                  </div>
+                  <div className="border rounded-md bg-white p-2 flex gap-2">
+                    <div className="w-12 h-12 rounded-md bg-slate-300"></div>
+                    <div>
+                      <h6>
+                        Objetivos de{' '}
+                        <span className="text-accent font-bold underline decoration-blue-700">
+                          Nivel 1
+                        </span>{' '}
+                        evaluados
+                      </h6>
+                      <p className="text-xl font-bold">57/206</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="border rounded-md bg-white p-2 flex gap-2">
-                <div className="w-12 h-12 rounded-md bg-slate-300"></div>
-                <div>
-                  <h6>
-                    Objetivos de{' '}
-                    <span className="text-accent font-bold underline decoration-blue-700">
-                      Nivel 1
-                    </span>{' '}
-                    evaluados
-                  </h6>
-                  <p className="text-xl font-bold">57/206</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            </>
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
     </Layout>

@@ -3,7 +3,7 @@ import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import { TERMS } from '../utils/constants'
+import { EVAL_TERMS } from '../utils/constants'
 import { Curriculum } from '../types/app'
 import Link from 'next/link'
 
@@ -154,7 +154,7 @@ const SideBar = ({ handleStudentList, studentListMenu }: Props) => {
                     {!router.query.evalType && (
                       <option>Elige una opcion</option>
                     )}
-                    {TERMS.map((t) => {
+                    {EVAL_TERMS.map((t) => {
                       return (
                         <option key={t.id} value={t.id}>
                           {t.name}

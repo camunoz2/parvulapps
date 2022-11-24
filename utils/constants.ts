@@ -1,3 +1,5 @@
+import { EvalTerms } from '../types/app'
+
 export const MAX_SCORE = [0, 1, 2, 3, 4, 5]
 
 // TODO: This depends on objective qty, best cache or harcoding the result
@@ -20,18 +22,21 @@ export const CORES = [
   { id: 8, name: 'Pensamiento Matemático' },
 ]
 
-export const TERMS = [
+export const EVAL_TERMS: EvalTerms[] = [
   {
     name: 'Diagnóstica',
     id: 0,
+    key: 'firstTermScore',
   },
   {
     name: 'Intermedia',
     id: 1,
+    key: 'secondTermScore',
   },
   {
     name: 'Final',
     id: 2,
+    key: 'thirdTermScore',
   },
 ]
 

@@ -13,7 +13,7 @@ import StudentList from '../components/StudentList'
 import Dashed from '../components/UI/Dashed'
 import Logo from '../components/UI/Logo'
 import Menu from '../components/UI/Menu'
-import { MAX_SCORE, TERMS } from '../utils/constants'
+import { MAX_SCORE, EVAL_TERMS } from '../utils/constants'
 
 const COLORS = [
   'bg-white',
@@ -277,11 +277,11 @@ const Evaluar = () => {
                             value={
                               parseInt(
                                 router.query.evalType as string
-                              ) === TERMS[0].id
+                              ) === EVAL_TERMS[0].id
                                 ? obj.firstTermScore
                                 : parseInt(
                                     router.query.evalType as string
-                                  ) === TERMS[1].id
+                                  ) === EVAL_TERMS[1].id
                                 ? obj.secondTermScore
                                 : obj.thirdTermScore
                             }

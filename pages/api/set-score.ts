@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../lib/prisma'
-import { TERMS } from '../../utils/constants'
+import { EVAL_TERMS } from '../../utils/constants'
 
 export default async function setScore(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.body.term === TERMS[0].id) {
+  if (req.body.term === EVAL_TERMS[0].id) {
     await prisma.objective.update({
       where: {
         id: req.body.objectiveId,
@@ -16,7 +16,7 @@ export default async function setScore(
       },
     })
   }
-  if (req.body.term === TERMS[1].id) {
+  if (req.body.term === EVAL_TERMS[1].id) {
     await prisma.objective.update({
       where: {
         id: req.body.objectiveId,
@@ -26,7 +26,7 @@ export default async function setScore(
       },
     })
   }
-  if (req.body.term === TERMS[2].id) {
+  if (req.body.term === EVAL_TERMS[2].id) {
     await prisma.objective.update({
       where: {
         id: req.body.objectiveId,

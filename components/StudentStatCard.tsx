@@ -1,10 +1,13 @@
+import { EvalTerms } from '../types/app'
+
 interface Props {
-  percentage: string
+  scores: number[]
   title: string
   stat?: string
+  index: number
 }
 
-const StudentStatCard = ({ percentage, title, stat }: Props) => {
+const StudentStatCard = ({ scores, title, stat, index }: Props) => {
   return (
     <div className="bg-white border border-accent/50 rounded-md shadow-custom py-5 px-10 grid grid-cols-3 items-center">
       <div className="col-span-2">
@@ -12,7 +15,7 @@ const StudentStatCard = ({ percentage, title, stat }: Props) => {
       </div>
       <div className="flex flex-col gap-1 text-right">
         <div className="col-span-1 text-2xl font-bold">
-          {percentage}
+          {scores[index] + '%'}
         </div>
         <p className="text-xs text-blue-500">{stat}</p>
       </div>

@@ -6,6 +6,12 @@ export interface Curriculum {
   cores: Core[]
 }
 
+export interface EvalTerms {
+  name: string
+  id: number
+  key: 'firstTermScore' | 'secondTermScore' | 'thirdTermScore'
+}
+
 export interface Response {
   sum: Sum2[]
   students: Student[]
