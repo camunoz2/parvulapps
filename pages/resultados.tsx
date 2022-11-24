@@ -238,7 +238,8 @@ const Resultados = () => {
               </div>
               <div className="mt-6">
                 <h4 className="mb-4">
-                  Evaluaciones pendientes y completadas
+                  Preguntar a las tias que les conviene en esta parte
+                  😊
                 </h4>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="border rounded-md bg-white p-2 flex gap-2">
