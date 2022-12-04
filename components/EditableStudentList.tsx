@@ -126,14 +126,15 @@ const EditableStudentList = ({ gradeId }: Props) => {
                 title="Rut"
                 className="p-2 border border-accent"
                 type="text"
-                defaultValue={modal.studentRut}
+                value={modal.studentRut}
                 name="rut"
-                onChange={(event) =>
+                onChange={(event) => {
                   setUpdatedStudent({
                     ...updatedStudent,
-                    rut: event?.target.value,
+
+                    rut: event.target.value,
                   })
-                }
+                }}
               />
             </div>
             <div className="flex gap-2">

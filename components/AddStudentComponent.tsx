@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { rutValidator } from '../utils/rutValidator'
 
 const AddStudentComponent = ({
   gradeId,
@@ -7,6 +8,7 @@ const AddStudentComponent = ({
   gradeId: number | null
 }) => {
   const queryClient = useQueryClient()
+  const [error, setError] = useState(false)
 
   const initialValues = {
     firstName: '',
@@ -36,6 +38,13 @@ const AddStudentComponent = ({
     })
   }
 
+  function handleInput(event: React.ChangeEvent<HTMLInputElement>) {
+    setStudent({
+      ...student,
+      [event.target.name]: event.target.value,
+    })
+  }
+
   return (
     <div className="flex gap-2 items-end">
       <div className="flex flex-col">
@@ -44,11 +53,9 @@ const AddStudentComponent = ({
         </label>
         <input
           title="first name"
-          onChange={(event) => {
-            setStudent({ ...student, firstName: event.target.value })
-          }}
+          onChange={handleInput}
           className="bg-white border border-accent py-3 rounded-md px-2"
-          name="name"
+          name="firstName"
           value={student.firstName}
         />
       </div>
@@ -58,32 +65,36 @@ const AddStudentComponent = ({
         </label>
         <input
           title="last name"
-          onChange={(event) =>
-            setStudent({ ...student, lastName: event.target.value })
-          }
+          onChange={handleInput}
           className="bg-white border border-accent py-3 rounded-md px-2"
           name="lastName"
           value={student.lastName}
         />
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col relative">
         <label className="font-light text-sm pl-1 italic">RUT</label>
         <input
           title="rut"
-          onChange={(event) =>
-            setStudent({
-              ...student,
-              rut: event.target.value,
-            })
-          }
+          onChange={handleInput}
           className="bg-white border border-accent py-3 rounded-md px-2"
           name="rut"
           value={student.rut}
         />
+        {error ? (
+          <div className="absolute -bottom-5 left-1 text-xs text-red-500">
+            Error, formato correcto: xxxxxxxx-x
+          </div>
+        ) : (
+          ''
+        )}
       </div>
       <button
         onClick={() => {
-          addStudentMutation.mutate()
+          rutValidator(student.rut)
+          if (rutValidator(student.rut)) {
+            addStudentMutation.mutate()
+            setError(false)
+          } else setError(true)
         }}
         className="border border-accent py-3 rounded-md px-2 bg-accent hover:cursor-pointer hover:shadow-md"
       >
